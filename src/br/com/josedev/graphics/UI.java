@@ -3,7 +3,6 @@ package br.com.josedev.graphics;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
-
 import br.com.josedev.entities.Player;
 
 public class UI {

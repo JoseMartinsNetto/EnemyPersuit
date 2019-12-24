@@ -3,7 +3,6 @@ package br.com.josedev.main;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import javax.swing.JFrame;
 import java.awt.Canvas;
 import java.awt.Color;

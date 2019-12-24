@@ -2,7 +2,6 @@ package br.com.josedev.entities;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
-
 import br.com.josedev.main.Game;
 import br.com.josedev.world.Camera;
 

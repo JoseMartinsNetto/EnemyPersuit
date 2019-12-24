@@ -3,9 +3,7 @@ package br.com.josedev.world;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
-
 import br.com.josedev.entities.*;
 import br.com.josedev.main.Game;
 

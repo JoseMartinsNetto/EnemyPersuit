@@ -3,10 +3,8 @@ package br.com.josedev.entities;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-
 import br.com.josedev.main.Game;
-import br.com.josedev.world.Camera;
-import br.com.josedev.world.World;
+import br.com.josedev.world.*;
 
 public class Enemy extends Entity {
 	private double speed = 1;

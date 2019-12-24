@@ -3,8 +3,7 @@ package br.com.josedev.entities;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import br.com.josedev.main.Game;
-import br.com.josedev.world.Camera;
-import br.com.josedev.world.World;
+import br.com.josedev.world.*;
 
 public class Player extends Entity{
 	public boolean up, down, left, rigth = false;
