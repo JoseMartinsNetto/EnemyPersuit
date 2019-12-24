@@ -3,6 +3,8 @@ package br.com.josedev.entities;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import br.com.josedev.main.Game;
+import br.com.josedev.main.world.Camera;
+import br.com.josedev.main.world.World;
 
 public class Player extends Entity{
 	public boolean up, down, left, rigth = false;
@@ -37,19 +39,19 @@ public class Player extends Entity{
 	public void tick() {
 		moved = false;
 		
-		if (up) {
+		if (up && World.isFree(this.getX(), (int)(y-speed))) {
 			moved = true;
 			y -= speed;
-		} else if (down) {
+		} else if (down && World.isFree(this.getX(), (int)(y+speed))) {
 			moved = true;
 			y += speed;
 		}
 		
-		if (rigth) {
+		if (rigth && World.isFree((int)(x+speed), this.getY())) {
 			moved = true;
 			dir = right_dir;
 			x += speed;
-		} else if (left) {
+		} else if (left && World.isFree((int)(x-speed), this.getY())) {
 			moved = true;
 			dir = left_dir;
 			x -= speed;
@@ -65,13 +67,16 @@ public class Player extends Entity{
 				}
 			}
 		}
+		
+		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH / 2), 0, World.WIDTH*16 - Game.WIDTH);
+		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT / 2), 0, World.HEIGHT*16 - Game.HEIGHT);
 	}
 	
 	public void render(Graphics g) {
 		if(dir == right_dir) {
-			g.drawImage(rightPlayer[index], this.getX(), this.getY(), null);
+			g.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		} else if(dir == left_dir) {
-			g.drawImage(leftPlayer[index], this.getX(), this.getY(), null);
+			g.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		}
 	}
 }
