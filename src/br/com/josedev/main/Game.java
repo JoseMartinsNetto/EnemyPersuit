@@ -14,7 +14,7 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import br.com.josedev.entities.*;
-import br.com.josedev.graphics.Spritesheet;
+import br.com.josedev.graphics.*;
 import br.com.josedev.world.World;
 
 public class Game extends Canvas implements Runnable, KeyListener {
@@ -37,12 +37,15 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 	public static Random rand;
 	
+	public UI ui;
+	
 	public Game() {
 		rand  = new Random();
 		addKeyListener(this);
 		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		initFrame();
 
+		ui = new UI();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		entities = new ArrayList<Entity> ();
 		enemies = new ArrayList<Enemy> ();
@@ -105,6 +108,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			Entity e = entities.get(i);
 			e.render(g);
 		}
+		
+		ui.render(g);
 		
 		g.dispose();
 		
