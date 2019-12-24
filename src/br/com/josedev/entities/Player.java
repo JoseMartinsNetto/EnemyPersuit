@@ -20,6 +20,8 @@ public class Player extends Entity{
 	
 	private boolean moved = false;
 	
+	public int life = 100;
+	
 	public Player (int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
 		
