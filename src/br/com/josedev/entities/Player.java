@@ -3,13 +3,13 @@ package br.com.josedev.entities;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import br.com.josedev.main.Game;
-import br.com.josedev.main.world.Camera;
-import br.com.josedev.main.world.World;
+import br.com.josedev.world.Camera;
+import br.com.josedev.world.World;
 
 public class Player extends Entity{
 	public boolean up, down, left, rigth = false;
 	
-	public double speed = 0.7;
+	public double speed = 1.4;
 	private int frames = 0, maxFrames = 5, index = 0, maxIndex = 3;
 	
 	public int right_dir = 0, left_dir = 1;

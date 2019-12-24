@@ -13,13 +13,13 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import br.com.josedev.entities.*;
 import br.com.josedev.graphics.Spritesheet;
-import br.com.josedev.main.world.World;
+import br.com.josedev.world.World;
 
 public class Game extends Canvas implements Runnable, KeyListener {
 	private static final long serialVersionUID = 1L;
 	public static JFrame frame;
-	public static final int WIDTH = 240;
-	public static final int HEIGHT = 160;
+	public static final int WIDTH = 320;
+	public static final int HEIGHT = 240;
 	private final int SCALE = 3;
 	private Thread thread;
 	private boolean isRunning = false;
@@ -119,6 +119,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		double delta = 0;
 		int frames = 0;
 		double timer = System.currentTimeMillis();
+		requestFocus();
 		while (isRunning) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
