@@ -2,6 +2,8 @@ package br.com.josedev.main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import javax.swing.JFrame;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -26,18 +28,24 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	private BufferedImage image;
 	
 	public static List<Entity> entities;
+	public static List<Enemy> enemies;
+	
 	public static Spritesheet spritesheet;
 	public static Player player;
 	
 	public static World world;
 	
+	public static Random rand;
+	
 	public Game() {
+		rand  = new Random();
 		addKeyListener(this);
 		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
 		initFrame();
 
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		entities = new ArrayList<Entity> ();
+		enemies = new ArrayList<Enemy> ();
 		
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0,0,16,16, spritesheet.getSprite(32, 0, 16, 16));	
