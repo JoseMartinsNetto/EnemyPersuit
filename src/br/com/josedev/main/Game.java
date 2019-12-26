@@ -49,6 +49,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 		ui = new UI();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		initializeEntities();
+		
+	}
+	
+	public static void initializeEntities() {
 		entities = new ArrayList<Entity> ();
 		enemies = new ArrayList<Enemy> ();
 		lifepacks = new ArrayList<Lifepack> ();
@@ -58,7 +63,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		player = new Player(0,0,16,16, spritesheet.getSprite(32, 0, 16, 16));	
 		entities.add(player);
 		world = new World("/map.png");
-		
 	}
 	
 	public synchronized void start() {

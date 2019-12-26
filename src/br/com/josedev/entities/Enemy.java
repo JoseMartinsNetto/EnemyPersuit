@@ -42,13 +42,8 @@ public class Enemy extends Entity {
 		} else {
 			// Is Colliding
 			if(Game.rand.nextInt(100) < 10) {
-				Player.life--;
-				System.out.println("Vida do player: " + Player.life);
-				
-				if(Player.life == 0) {
-					// Game Over
-					System.exit(1);
-				}
+				Player.life -= Game.rand.nextInt(3);
+				Game.player.isDamaged = true;
 			}
 			
 		}
