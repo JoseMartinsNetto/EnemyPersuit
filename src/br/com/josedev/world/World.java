@@ -49,7 +49,9 @@ public class World {
 						Game.entities.add(new Weapon(xx*16, yy*16, 16,16, Entity.WEAPON_EN));
 					}else if (currentPixel == 0xFFFFD800) {
 						// BULLET
-						Game.entities.add(new Bullet(xx*16, yy*16, 16,16, Entity.BULLET_EN));
+						Bullet bullet = new Bullet(xx*16, yy*16, 16,16, Entity.BULLET_EN);
+						Game.bullets.add(bullet);
+						Game.entities.add(bullet);
 					}else if (currentPixel == 0xFF4CFF00) {
 						// LIFEPACK
 						Lifepack pack = new Lifepack(xx*16, yy*16, 16,16, Entity.LIFEPACK_EN);

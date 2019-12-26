@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -19,8 +20,8 @@ import br.com.josedev.world.World;
 public class Game extends Canvas implements Runnable, KeyListener {
 	private static final long serialVersionUID = 1L;
 	public static JFrame frame;
-	public static final int WIDTH = 320;
-	public static final int HEIGHT = 240;
+	public static final int WIDTH = 240;
+	public static final int HEIGHT = 160;
 	private final int SCALE = 3;
 	private Thread thread;
 	private boolean isRunning = false;
@@ -29,6 +30,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static List<Entity> entities;
 	public static List<Enemy> enemies;
 	public static List<Lifepack> lifepacks;
+	public static List<Bullet> bullets;
 	
 	public static Spritesheet spritesheet;
 	public static Player player;
@@ -50,6 +52,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		entities = new ArrayList<Entity> ();
 		enemies = new ArrayList<Enemy> ();
 		lifepacks = new ArrayList<Lifepack> ();
+		bullets = new ArrayList<Bullet> ();
 		
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0,0,16,16, spritesheet.getSprite(32, 0, 16, 16));	
@@ -115,6 +118,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		g.dispose();
 		g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
+		g.setFont(new Font("arial", Font.BOLD, 20));
+		g.setColor(Color.white);
+		g.drawString("Munição: " + player.ammo, 600, 20);
 		bs.show();
 	}
 
