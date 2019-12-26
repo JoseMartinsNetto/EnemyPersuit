@@ -1,6 +1,7 @@
 package br.com.josedev.entities;
 
 import java.awt.Graphics;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import br.com.josedev.main.Game;
 import br.com.josedev.world.Camera;
@@ -18,12 +19,27 @@ public class Entity {
 	public static BufferedImage BULLET_EN = Game.spritesheet.getSprite(6*16, 16, 16, 16);
 	public static BufferedImage ENEMY_EN = Game.spritesheet.getSprite(7*16, 16, 16, 16);
 	
+	private int maskx, masky, mwidth, mheight;
+	
 	public Entity(int x, int y, int width, int height, BufferedImage sprite) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
 		this.height = height;
 		this.sprite = sprite;
+		
+		this.maskx = 0;
+		this.masky = 0;
+		this.mwidth = width;
+		this.mheight = height;
+	}
+	
+	
+	public void setMask(int maskx, int masky, int mwidth, int mheight) {
+		this.maskx = maskx;
+		this.masky = masky;
+		this.mwidth = mwidth;
+		this.mheight = mheight;
 	}
 	
 	public void setX(int newX) {
@@ -49,6 +65,13 @@ public class Entity {
 	
 	public int getHeight() {
 		return this.height;
+	}
+	
+	public static boolean isColliding(Entity e , Entity e2) {
+		Rectangle e1mask = new Rectangle(e.getX() + e.maskx, e.getY() + e.masky, e.mwidth, e.mheight);
+		Rectangle e2mask = new Rectangle(e2.getX() + e2.maskx, e2.getY() + e2.masky, e2.mwidth, e2.mheight);
+		
+		return e1mask.intersects(e2mask);
 	}
 	
 	public void render(Graphics g) {
