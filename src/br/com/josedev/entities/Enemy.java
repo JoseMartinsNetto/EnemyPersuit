@@ -10,6 +10,8 @@ public class Enemy extends Entity {
 	private double speed = 1;
 	private int frames = 0, maxFrames = 10, index = 0, maxIndex = 1;
 	private BufferedImage[] sprites;
+	
+	private int life = 30;
 
 	public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -54,6 +56,31 @@ public class Enemy extends Entity {
 			index++;
 			if(index > maxIndex) {
 				index = 0;
+			}
+		}
+		
+		collidingBullet();
+		
+		if(life <= 0) {
+			destroySelf();
+			return;
+		}
+	}
+	
+	public void destroySelf() {
+		Game.enemies.remove(this);
+		Game.entities.remove(this);
+		
+	}
+	
+	public void collidingBullet() {
+		for (int i = 0; i < Game.bulletShoots.size(); i++ ) {
+			BulletShoot bs = Game.bulletShoots.get(i);
+			if(Entity.isColliding(this, bs)) {
+				life-=10;
+				System.out.println("Life: " + life);
+				Game.bulletShoots.remove(i);
+				return;
 			}
 		}
 	}
