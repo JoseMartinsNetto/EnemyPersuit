@@ -46,7 +46,9 @@ public class World {
 						Game.enemies.add(en);
 					} else if (currentPixel == 0xFF7F3300) {
 						// WEAPON
-						Game.entities.add(new Weapon(xx*16, yy*16, 16,16, Entity.WEAPON_EN));
+						Weapon weapon = new Weapon(xx*16, yy*16, 16,16, Entity.WEAPON_EN);
+						Game.waepons.add(weapon);
+						Game.entities.add(weapon);
 					}else if (currentPixel == 0xFFFFD800) {
 						// BULLET
 						Bullet bullet = new Bullet(xx*16, yy*16, 16,16, Entity.BULLET_EN);

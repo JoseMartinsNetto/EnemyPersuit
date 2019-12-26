@@ -18,6 +18,8 @@ public class Entity {
 	public static BufferedImage WEAPON_EN = Game.spritesheet.getSprite(7*16, 0, 16, 16);
 	public static BufferedImage BULLET_EN = Game.spritesheet.getSprite(6*16, 16, 16, 16);
 	public static BufferedImage ENEMY_EN = Game.spritesheet.getSprite(7*16, 16, 16, 16);
+	public static BufferedImage WEAPON_RIGHT = Game.spritesheet.getSprite(128, 0, 16, 16);
+	public static BufferedImage WEAPON_LEFT= Game.spritesheet.getSprite(128+16, 0, 16, 16);
 	
 	private int maskx, masky, mwidth, mheight;
 	

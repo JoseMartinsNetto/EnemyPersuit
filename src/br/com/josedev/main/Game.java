@@ -31,6 +31,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static List<Enemy> enemies;
 	public static List<Lifepack> lifepacks;
 	public static List<Bullet> bullets;
+	public static List<Weapon> waepons;
 	
 	public static Spritesheet spritesheet;
 	public static Player player;
@@ -58,6 +59,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		enemies = new ArrayList<Enemy> ();
 		lifepacks = new ArrayList<Lifepack> ();
 		bullets = new ArrayList<Bullet> ();
+		waepons = new ArrayList<Weapon> ();
 		
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0,0,16,16, spritesheet.getSprite(32, 0, 16, 16));	
