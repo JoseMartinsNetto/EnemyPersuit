@@ -32,6 +32,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static List<Lifepack> lifepacks;
 	public static List<Bullet> bullets;
 	public static List<Weapon> waepons;
+	public static List<BulletShoot> bulletShoots;
 	
 	public static Spritesheet spritesheet;
 	public static Player player;
@@ -60,6 +61,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		lifepacks = new ArrayList<Lifepack> ();
 		bullets = new ArrayList<Bullet> ();
 		waepons = new ArrayList<Weapon> ();
+		bulletShoots = new ArrayList<BulletShoot> ();
 		
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0,0,16,16, spritesheet.getSprite(32, 0, 16, 16));	
@@ -94,8 +96,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 	public void tick() {
 		for (int i = 0; i < entities.size(); i++) {
-			Entity e = entities.get(i);
-			e.tick();
+			entities.get(i).tick();
+		}
+		
+		for (int i = 0; i < bulletShoots.size(); i++) {
+			 bulletShoots.get(i).tick();
 		}
 	}
 	
@@ -115,8 +120,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		world.render(g);
 		
 		for (int i = 0; i < entities.size(); i++) {
-			Entity e = entities.get(i);
-			e.render(g);
+			entities.get(i).render(g);
+		}
+		
+		for (int i = 0; i < bulletShoots.size(); i++) {
+			bulletShoots.get(i).render(g);
 		}
 		
 		ui.render(g);
@@ -180,6 +188,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			
 		} else if(e.getKeyCode() == KeyEvent.VK_DOWN ||  e.getKeyCode() == KeyEvent.VK_S) {
 			player.down = true;
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+			player.isShooting = true;
 		}
 	}
 

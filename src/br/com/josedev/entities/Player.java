@@ -28,6 +28,7 @@ public class Player extends Entity{
 	public int ammo = 0;
 	
 	private boolean hasGun = false;
+	public boolean isShooting = false;
 	
 	public Player (int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -88,6 +89,29 @@ public class Player extends Entity{
 				damegedFrames = 0;
 				isDamaged = false;
 			}
+		}
+		
+		if(isShooting) {
+			isShooting = false;
+			if(hasGun && ammo > 0) {
+				ammo--;
+
+				int dx = 0;
+				int px = 0;
+				int py = 6;
+				if(dir == right_dir) {
+					px = 18;
+					dx = 1;
+				} else {
+					px = -8;
+					dx = -1;
+				}
+				
+				BulletShoot bullet = new BulletShoot(this.getX() + px, this.getY() + py, 3, 3, null, dx, 0);
+				
+				Game.bulletShoots.add(bullet);
+			}
+			
 		}
 		
 		if(life <= 0) {
