@@ -12,6 +12,8 @@ public class BulletShoot extends Entity {
 	private int dx,dy;
 	private double speed = 4;
 	private int life = 35, curLife = 0;
+	
+	public static final int DAMAGE = 10;
 
 	public BulletShoot(int x, int y, int width, int height, BufferedImage sprite, int dx, int dy) {
 		super(x, y, width, height, sprite);

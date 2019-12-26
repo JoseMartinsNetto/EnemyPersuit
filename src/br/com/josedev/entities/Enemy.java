@@ -12,6 +12,8 @@ public class Enemy extends Entity {
 	private BufferedImage[] sprites;
 	
 	private int life = 30;
+	private boolean isDamage = false;
+	private int damageFrames = 10, damageCurrent = 0;
 
 	public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
@@ -44,7 +46,7 @@ public class Enemy extends Entity {
 		} else {
 			// Is Colliding
 			if(Game.rand.nextInt(100) < 10) {
-				Game.player.life -= Game.rand.nextInt(3);
+				Game.player.life -= Game.rand.nextInt(5);
 				Game.player.isDamaged = true;
 			}
 			
@@ -65,6 +67,14 @@ public class Enemy extends Entity {
 			destroySelf();
 			return;
 		}
+		
+		if(isDamage) {
+			damageCurrent++;
+			if(damageCurrent == damageFrames) {
+				damageCurrent = 0;
+				isDamage = false;
+			}
+		}
 	}
 	
 	public void destroySelf() {
@@ -77,8 +87,8 @@ public class Enemy extends Entity {
 		for (int i = 0; i < Game.bulletShoots.size(); i++ ) {
 			BulletShoot bs = Game.bulletShoots.get(i);
 			if(Entity.isColliding(this, bs)) {
-				life-=10;
-				System.out.println("Life: " + life);
+				isDamage = true;
+				life -= BulletShoot.DAMAGE;
 				Game.bulletShoots.remove(i);
 				return;
 			}
@@ -86,7 +96,11 @@ public class Enemy extends Entity {
 	}
 	
 	public void render(Graphics g) {
-		g.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y,  null);
+		if(isDamage) {
+			g.drawImage(Entity.ENEMY_EN_DAMAGE, this.getX() - Camera.x, this.getY() - Camera.y,  null);
+		} else {
+			g.drawImage(sprites[index], this.getX() - Camera.x, this.getY() - Camera.y,  null);
+		}
 	}
 	
 	public boolean isColidding(int xnext, int ynext) {
