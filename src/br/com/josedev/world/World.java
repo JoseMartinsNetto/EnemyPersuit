@@ -27,36 +27,36 @@ public class World {
 			for (int xx = 0; xx < map.getWidth(); xx++ ) {
 				for (int yy = 0; yy < map.getHeight(); yy++) {
 					int currentPixel = pixels[xx + (yy*map.getWidth())];
-					tiles[xx + (yy * WIDTH)] = new FloorTile(xx*16, yy*16, Tile.TILE_FLOOR);
+					tiles[xx + (yy * WIDTH)] = new FloorTile(xx*TILE_SIZE, yy*TILE_SIZE, Tile.TILE_FLOOR);
 					
 					if(currentPixel == 0xFF000000) {
 						// Floor
-						tiles[xx + (yy * WIDTH)] = new FloorTile(xx*16, yy*16, Tile.TILE_FLOOR);
+						tiles[xx + (yy * WIDTH)] = new FloorTile(xx*TILE_SIZE, yy*TILE_SIZE, Tile.TILE_FLOOR);
 					} else if(currentPixel == 0xFFFFFFFF) {
 						// Walls
-						tiles[xx + (yy * WIDTH)] = new WallTile(xx*16, yy*16, Tile.TILE_WALL);
+						tiles[xx + (yy * WIDTH)] = new WallTile(xx*TILE_SIZE, yy*TILE_SIZE, Tile.TILE_WALL);
 					} else if(currentPixel == 0xFF0026FF) {
 						// player
 						Game.player.setX(xx*16);
 						Game.player.setY(yy*16);
 					} else if (currentPixel == 0xFFFF0000) {
 						// Enemy
-						Enemy en = new Enemy(xx*16, yy*16, 16,16, Entity.ENEMY_EN);
+						Enemy en = new Enemy(xx*TILE_SIZE, yy*TILE_SIZE, TILE_SIZE,TILE_SIZE, Entity.ENEMY_EN);
 						Game.entities.add(en);
 						Game.enemies.add(en);
 					} else if (currentPixel == 0xFF7F3300) {
 						// WEAPON
-						Weapon weapon = new Weapon(xx*16, yy*16, 16,16, Entity.WEAPON_EN);
+						Weapon weapon = new Weapon(xx*TILE_SIZE, yy*TILE_SIZE, TILE_SIZE,TILE_SIZE, Entity.WEAPON_EN);
 						Game.waepons.add(weapon);
 						Game.entities.add(weapon);
 					}else if (currentPixel == 0xFFFFD800) {
-						// BULLET
-						Bullet bullet = new Bullet(xx*16, yy*16, 16,16, Entity.BULLET_EN);
-						Game.bullets.add(bullet);
-						Game.entities.add(bullet);
+						// Ammunition
+						Ammunition ammo = new Ammunition(xx*TILE_SIZE, yy*TILE_SIZE, TILE_SIZE,TILE_SIZE, Entity.AMMO_EN);
+						Game.ammunition.add(ammo);
+						Game.entities.add(ammo);
 					}else if (currentPixel == 0xFF4CFF00) {
 						// LIFEPACK
-						Lifepack pack = new Lifepack(xx*16, yy*16, 16,16, Entity.LIFEPACK_EN);
+						Lifepack pack = new Lifepack(xx*TILE_SIZE, yy*TILE_SIZE, TILE_SIZE,TILE_SIZE, Entity.LIFEPACK_EN);
 						Game.entities.add(pack);
 						Game.lifepacks.add(pack);
 					}

@@ -6,25 +6,24 @@ import br.com.josedev.main.Game;
 import br.com.josedev.world.*;
 
 public class Player extends Entity{
-	public boolean up, down, left, rigth = false;
+	public boolean up = false, down = false, left = false, rigth = false;
 	
 	public double speed = 1.4;
-	private int frames = 0, maxFrames = 5, index = 0, maxIndex = 3;
+	private int animationFrames = 0, maxAnimationFrames = 5, indexAnimation = 0, maxIndexAnimation = 3;
 	
-	public int right_dir = 0, left_dir = 1;
-	public int dir = right_dir;
+	public int rightDir = 0, leftDir = 1;
+	public int dir = rightDir;
 
-	private BufferedImage[] rightPlayer;
-	private BufferedImage[] leftPlayer;
+	private BufferedImage[] rightAnimationPlayer;
+	private BufferedImage[] leftAnimationPlayer;
 	
 	private BufferedImage damagedPlayer;
 	private int damegedFrames = 0;
-	public boolean isDamaged = false;
 	
+	public boolean isDamaged = false;
 	private boolean moved = false;
 	
 	public double life = 100, maxLife = 100;
-	
 	public int ammo = 0;
 	
 	private boolean hasGun = false;
@@ -32,24 +31,61 @@ public class Player extends Entity{
 	
 	public Player (int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
-		
-		rightPlayer = new BufferedImage[4];
-		leftPlayer = new BufferedImage[4];
-		damagedPlayer = Game.spritesheet.getSprite(0, 16, 16, 16);
-		
-		
-		for (int i = 0; i< 4; i++) {
-			rightPlayer[i] = Game.spritesheet.getSprite(32 + (i*16), 0, 16, 16);
-		}
-		
-		for (int i = 0; i< 4; i++) {
-			leftPlayer[i] = Game.spritesheet.getSprite(32 + (i*16), 16, 16, 16);
-		}
+		setupAnimations();
 	}
 	
 	public void tick() {
-		moved = false;
+		generateAndCheckAnimations();
+		checkColisionWithLifePack();
+		checkColisionLifeWithAmmunition();
+		checkColisionWithWeapon();
 		
+		
+		if(life <= 0) {
+			life = 0;
+			Game.initializeEntities();
+		}
+		
+		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH / 2), 0, World.WIDTH*16 - Game.WIDTH);
+		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT / 2), 0, World.HEIGHT*16 - Game.HEIGHT);
+	}
+	
+
+	public void render(Graphics g) {
+		if(isDamaged) {
+			g.drawImage(damagedPlayer, this.getX() - Camera.x, this.getY() - Camera.y, null);
+		} else {
+			if(dir == rightDir) {
+				g.drawImage(rightAnimationPlayer[indexAnimation], this.getX() - Camera.x, this.getY() - Camera.y, null);
+				if(hasGun) { 
+					g.drawImage(Entity.WEAPON_RIGHT, this.getX()+6 - Camera.x, this.getY() - Camera.y, null);
+				}
+			} else if(dir == leftDir) {
+				g.drawImage(leftAnimationPlayer[indexAnimation], this.getX() - Camera.x, this.getY() - Camera.y, null);
+				if(hasGun) {
+					g.drawImage(Entity.WEAPON_LEFT, this.getX()-6 - Camera.x, this.getY() - Camera.y, null);
+				}
+			}
+		}
+	}
+	
+	private void setupAnimations() {
+		rightAnimationPlayer = new BufferedImage[4];
+		leftAnimationPlayer = new BufferedImage[4];
+		
+		damagedPlayer = Game.spritesheet.getSprite(0, 16, 16, 16);
+		
+		for (int i = 0; i< 4; i++) {
+			rightAnimationPlayer[i] = Game.spritesheet.getSprite(32 + (i*16), 0, 16, 16);
+		}
+		
+		for (int i = 0; i< 4; i++) {
+			leftAnimationPlayer[i] = Game.spritesheet.getSprite(32 + (i*16), 16, 16, 16);
+		}
+	}
+	
+	private void generateAndCheckAnimations() {
+		moved = false;
 		if (up && World.isFree(this.getX(), (int)(y-speed))) {
 			moved = true;
 			y -= speed;
@@ -60,34 +96,22 @@ public class Player extends Entity{
 		
 		if (rigth && World.isFree((int)(x+speed), this.getY())) {
 			moved = true;
-			dir = right_dir;
+			dir = rightDir;
 			x += speed;
 		} else if (left && World.isFree((int)(x-speed), this.getY())) {
 			moved = true;
-			dir = left_dir;
+			dir = leftDir;
 			x -= speed;
 		}
 		
 		if(moved) {
-			frames++;
-			if(frames == maxFrames) {
-				frames = 0;
-				index++;
-				if(index > maxIndex) {
-					index = 0;
+			animationFrames++;
+			if(animationFrames == maxAnimationFrames) {
+				animationFrames = 0;
+				indexAnimation++;
+				if(indexAnimation > maxIndexAnimation) {
+					indexAnimation = 0;
 				}
-			}
-		}
-		
-		checkColisionLifePack();
-		checkColisionLifeAmmo();
-		checkColisionWeapon();
-		
-		if(isDamaged) {
-			damegedFrames++;
-			if(damegedFrames == 3) {
-				damegedFrames = 0;
-				isDamaged = false;
 			}
 		}
 		
@@ -99,7 +123,7 @@ public class Player extends Entity{
 				int dx = 0;
 				int px = 0;
 				int py = 6;
-				if(dir == right_dir) {
+				if(dir == rightDir) {
 					px = 18;
 					dx = 1;
 				} else {
@@ -107,41 +131,41 @@ public class Player extends Entity{
 					dx = -1;
 				}
 				
-				BulletShoot bullet = new BulletShoot(this.getX() + px, this.getY() + py, 3, 3, null, dx, 0);
+				Bullet bullet = new Bullet(this.getX() + px, this.getY() + py, 3, 3, null, dx, 0);
 				
-				Game.bulletShoots.add(bullet);
+				Game.bullets.add(bullet);
 			}
 			
 		}
 		
-		if(life <= 0) {
-			life = 0;
-			Game.initializeEntities();
+		if(isDamaged) {
+			damegedFrames++;
+			if(damegedFrames == 3) {
+				damegedFrames = 0;
+				isDamaged = false;
+			}
 		}
-		
-		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH / 2), 0, World.WIDTH*16 - Game.WIDTH);
-		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT / 2), 0, World.HEIGHT*16 - Game.HEIGHT);
 	}
 	
-	public void checkColisionLifeAmmo() {
-		for (int i = 0; i < Game.bullets.size(); i++) {
-			Bullet bullet = Game.bullets.get(i);
+	private void checkColisionLifeWithAmmunition() {
+		for (int i = 0; i < Game.ammunition.size(); i++) {
+			Ammunition currentAmmo = Game.ammunition.get(i);
 			
-			if(Entity.isColliding(this, bullet)) {
-				ammo += Bullet.ammoSize;
+			if(Entity.isColliding(this, currentAmmo)) {
+				ammo += Ammunition.ammunitionSize;
 				
-				if(ammo > Bullet.maxAmmo) {
-					ammo = Bullet.maxAmmo;
+				if(ammo > Ammunition.maxAmmunition) {
+					ammo = Ammunition.maxAmmunition;
 				}
 				
-				Game.bullets.remove(bullet);
-				Game.entities.remove(bullet);
+				Game.ammunition.remove(currentAmmo);
+				Game.entities.remove(currentAmmo);
 					
 			}
 		}
 	}
 	
-	public void checkColisionLifePack() {
+	private void checkColisionWithLifePack() {
 		for (int i = 0; i < Game.lifepacks.size(); i++) {
 			Lifepack lifepack = Game.lifepacks.get(i);
 			
@@ -160,7 +184,7 @@ public class Player extends Entity{
 		
 	}
 	
-	public void checkColisionWeapon() {
+	private void checkColisionWithWeapon() {
 		for (int i = 0; i < Game.waepons.size(); i++) {
 			Weapon waepon = Game.waepons.get(i);
 			
@@ -175,21 +199,4 @@ public class Player extends Entity{
 		
 	}
 	
-	public void render(Graphics g) {
-		if(isDamaged) {
-			g.drawImage(damagedPlayer, this.getX() - Camera.x, this.getY() - Camera.y, null);
-		} else {
-			if(dir == right_dir) {
-				g.drawImage(rightPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-				if(hasGun) { 
-					g.drawImage(Entity.WEAPON_RIGHT, this.getX()+6 - Camera.x, this.getY() - Camera.y, null);
-				}
-			} else if(dir == left_dir) {
-				g.drawImage(leftPlayer[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
-				if(hasGun) {
-					g.drawImage(Entity.WEAPON_LEFT, this.getX()-6 - Camera.x, this.getY() - Camera.y, null);
-				}
-			}
-		}
-	}
 }

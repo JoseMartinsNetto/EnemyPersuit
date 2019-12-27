@@ -31,7 +31,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static List<Lifepack> lifepacks;
 	public static List<Bullet> bullets;
 	public static List<Weapon> waepons;
-	public static List<BulletShoot> bulletShoots;
+	public static List<Ammunition> ammunition;
 	
 	public static Spritesheet spritesheet;
 	public static Player player;
@@ -60,7 +60,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		lifepacks = new ArrayList<Lifepack> ();
 		bullets = new ArrayList<Bullet> ();
 		waepons = new ArrayList<Weapon> ();
-		bulletShoots = new ArrayList<BulletShoot> ();
+		ammunition = new ArrayList<Ammunition> ();
 		
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0,0,16,16, spritesheet.getSprite(32, 0, 16, 16));	
@@ -98,8 +98,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			entities.get(i).tick();
 		}
 		
-		for (int i = 0; i < bulletShoots.size(); i++) {
-			 bulletShoots.get(i).tick();
+		for (int i = 0; i < bullets.size(); i++) {
+			bullets.get(i).tick();
 		}
 	}
 	
@@ -122,8 +122,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			entities.get(i).render(g);
 		}
 		
-		for (int i = 0; i < bulletShoots.size(); i++) {
-			bulletShoots.get(i).render(g);
+		for (int i = 0; i < bullets.size(); i++) {
+			bullets.get(i).render(g);
 		}
 		
 		

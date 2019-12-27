@@ -113,12 +113,12 @@ public class Enemy extends Entity {
 	}
 	
 	private void verifyBulletCollision() {
-		for (int i = 0; i < Game.bulletShoots.size(); i++ ) {
-			BulletShoot bs = Game.bulletShoots.get(i);
+		for (int i = 0; i < Game.bullets.size(); i++ ) {
+			Bullet bs = Game.bullets.get(i);
 			if(Entity.isColliding(this, bs)) {
 				isDamage = true;
-				life -= BulletShoot.DAMAGE;
-				Game.bulletShoots.remove(i);
+				life -= Bullet.DAMAGE;
+				Game.bullets.remove(i);
 				return;
 			}
 		}
