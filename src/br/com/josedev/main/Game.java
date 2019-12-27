@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -22,7 +21,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static JFrame frame;
 	public static final int WIDTH = 240;
 	public static final int HEIGHT = 160;
-	private final int SCALE = 3;
+	public static final int SCALE = 4;
 	private Thread thread;
 	private boolean isRunning = false;
 	private BufferedImage image;
@@ -127,14 +126,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			bulletShoots.get(i).render(g);
 		}
 		
-		ui.render(g);
+		
 		
 		g.dispose();
 		g = bs.getDrawGraphics();
 		g.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
-		g.setFont(new Font("arial", Font.BOLD, 20));
-		g.setColor(Color.white);
-		g.drawString("Munição: " + player.ammo, 600, 20);
+		
+		ui.render(g);
 		bs.show();
 	}
 
