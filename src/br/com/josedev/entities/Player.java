@@ -43,7 +43,7 @@ public class Player extends Entity{
 		
 		if(life <= 0) {
 			life = 0;
-			Game.initializeEntities();
+			Game.startOrRestartGame(Game.curLevelName);
 		}
 		
 		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH / 2), 0, World.WIDTH*16 - Game.WIDTH);

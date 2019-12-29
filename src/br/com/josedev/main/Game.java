@@ -22,6 +22,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static final int WIDTH = 240;
 	public static final int HEIGHT = 160;
 	public static final int SCALE = 4;
+	private int CUR_LEVEL = 1, MAX_LEVEL = 2;
+	public static String curLevelName;
 	private Thread thread;
 	private boolean isRunning = false;
 	private BufferedImage image;
@@ -50,11 +52,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 		ui = new UI();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-		initializeEntities();
-		
+		startOrRestartGame("level1.png");
 	}
 	
-	public static void initializeEntities() {
+	public static void startOrRestartGame(String level) {
+		curLevelName = level;
 		entities = new ArrayList<Entity> ();
 		enemies = new ArrayList<Enemy> ();
 		lifepacks = new ArrayList<Lifepack> ();
@@ -65,7 +67,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		spritesheet = new Spritesheet("/spritesheet.png");
 		player = new Player(0,0,16,16, spritesheet.getSprite(32, 0, 16, 16));	
 		entities.add(player);
-		world = new World("/map.png");
+		world = new World("/"+level);
 	}
 	
 	public synchronized void start() {
@@ -84,7 +86,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	}
 	
 	public void initFrame() {
-		frame = new JFrame("Zelda Clone game");
+		frame = new JFrame("Enemy persuit");
 		frame.add(this);
 		frame.setResizable(false);
 		frame.pack();
@@ -100,6 +102,18 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		
 		for (int i = 0; i < bullets.size(); i++) {
 			bullets.get(i).tick();
+		}
+		
+		if(enemies.size() == 0) {
+			CUR_LEVEL++;
+			if(CUR_LEVEL > MAX_LEVEL) {
+				CUR_LEVEL = 1;
+			}
+			
+			String newWorld = "level"+CUR_LEVEL+".png";
+			curLevelName = newWorld;
+			
+			System.out.println("Passou de fase: " + newWorld);
 		}
 	}
 	
@@ -125,8 +139,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		for (int i = 0; i < bullets.size(); i++) {
 			bullets.get(i).render(g);
 		}
-		
-		
 		
 		g.dispose();
 		g = bs.getDrawGraphics();
