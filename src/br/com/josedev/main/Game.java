@@ -7,7 +7,9 @@ import javax.swing.JFrame;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
@@ -35,12 +37,19 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static List<Weapon> waepons;
 	public static List<Ammunition> ammunition;
 	
+	public static String gameState = "MENU";
+	private boolean showMessageGameOver = true;
+	private int framesGameOver = 0;
+	private boolean restartGame = false;
+	
 	public static Spritesheet spritesheet;
 	public static Player player;
 	
 	public static World world;
 	
 	public static Random rand;
+	
+	public Menu menu;
 	
 	public UI ui;
 	
@@ -51,6 +60,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		initFrame();
 
 		ui = new UI();
+		menu = new Menu();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		startOrRestartGame("level1.png");
 	}
@@ -96,25 +106,47 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	}
 	
 	public void tick() {
-		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).tick();
-		}
-		
-		for (int i = 0; i < bullets.size(); i++) {
-			bullets.get(i).tick();
-		}
-		
-		if(enemies.size() == 0) {
-			CUR_LEVEL++;
-			if(CUR_LEVEL > MAX_LEVEL) {
-				CUR_LEVEL = 1;
+		if(gameState == "NORMAL") {
+			restartGame = false;
+			for (int i = 0; i < entities.size(); i++) {
+				entities.get(i).tick();
 			}
 			
-			String newWorld = "level"+CUR_LEVEL+".png";
-			curLevelName = newWorld;
+			for (int i = 0; i < bullets.size(); i++) {
+				bullets.get(i).tick();
+			}
 			
-			System.out.println("Passou de fase: " + newWorld);
+			if(enemies.size() == 0) {
+				CUR_LEVEL++;
+				if(CUR_LEVEL > MAX_LEVEL) {
+					CUR_LEVEL = 1;
+				}
+				
+				String newWorld = "level"+CUR_LEVEL+".png";
+				curLevelName = newWorld;
+				
+				startOrRestartGame(newWorld);
+			}
+		} else if (gameState == "GAME OVER") {
+			framesGameOver++;
+			if(framesGameOver == 30) {
+				framesGameOver = 0;
+				if(showMessageGameOver) {
+					showMessageGameOver = false;
+				}else {
+					showMessageGameOver = true;
+				}
+			}
+			
+			if(restartGame) {
+				gameState = "NORMAL";
+				startOrRestartGame(curLevelName);
+			}
+		} else if (gameState == "MENU") {
+			menu.tick();
 		}
+		
+		
 	}
 	
 	public void render() {
@@ -145,6 +177,22 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		g.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
 		
 		ui.render(g);
+		 if (gameState == "GAME OVER") {
+			 Graphics2D g2 = (Graphics2D) g;
+			g2.setColor(new Color(0,0,0,100));
+			g2.fillRect(0, 00, WIDTH*SCALE, HEIGHT*SCALE);
+			 
+			g.setColor(Color.white);
+			g.setFont(new Font("arial", Font.BOLD, 20));
+			g.drawString("GAME OVER",  (WIDTH*SCALE) / 2 - 50, (HEIGHT*SCALE) / 2 - 20);
+			g.setFont(new Font("arial", Font.BOLD, 25));
+			if (showMessageGameOver) {
+				g.drawString("> Pressione Enter para reiniciar <",  (WIDTH*SCALE) / 2 - 180, (HEIGHT*SCALE) / 2 + 20);
+			}
+		 } else if (gameState == "MENU") {
+			 menu.render(g);
+		 }
+		
 		bs.show();
 	}
 
@@ -195,14 +243,25 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		
 		if(e.getKeyCode() == KeyEvent.VK_UP ||  e.getKeyCode() == KeyEvent.VK_W) {
 			player.up = true;
+			if(gameState == "MENU") {
+				menu.up = true;
+			}
 			
 		} else if(e.getKeyCode() == KeyEvent.VK_DOWN ||  e.getKeyCode() == KeyEvent.VK_S) {
 			player.down = true;
+			if(gameState == "MENU") {
+				menu.down = true;
+			}
 		}
 		
 		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
 			player.isShooting = true;
 		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+			restartGame = true;
+		}
+		
 	}
 
 	@Override

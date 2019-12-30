@@ -43,7 +43,7 @@ public class Player extends Entity{
 		
 		if(life <= 0) {
 			life = 0;
-			Game.startOrRestartGame(Game.curLevelName);
+			Game.gameState = "GAME OVER";
 		}
 		
 		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH / 2), 0, World.WIDTH*16 - Game.WIDTH);
@@ -54,6 +54,13 @@ public class Player extends Entity{
 	public void render(Graphics g) {
 		if(isDamaged) {
 			g.drawImage(damagedPlayer, this.getX() - Camera.x, this.getY() - Camera.y, null);
+			if(hasGun) {
+				if(dir == rightDir) {
+					g.drawImage(Entity.WEAPON_DAMAGE_RIGHT, this.getX()+6 - Camera.x, this.getY() - Camera.y, null);
+				} else {
+					g.drawImage(Entity.WEAPON_DAMAGE_LEFT, this.getX()-6 - Camera.x, this.getY() - Camera.y, null);
+				}
+			}
 		} else {
 			if(dir == rightDir) {
 				g.drawImage(rightAnimationPlayer[indexAnimation], this.getX() - Camera.x, this.getY() - Camera.y, null);
