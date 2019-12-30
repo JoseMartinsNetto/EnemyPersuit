@@ -3,6 +3,7 @@ package br.com.josedev.entities;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import br.com.josedev.main.Game;
+import br.com.josedev.main.Sound;
 import br.com.josedev.world.*;
 
 public class Player extends Entity{
@@ -46,6 +47,11 @@ public class Player extends Entity{
 			Game.gameState = "GAME OVER";
 		}
 		
+		updateCamera();
+		
+	}
+	
+	public void updateCamera() {
 		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH / 2), 0, World.WIDTH*16 - Game.WIDTH);
 		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT / 2), 0, World.HEIGHT*16 - Game.HEIGHT);
 	}
@@ -112,6 +118,7 @@ public class Player extends Entity{
 		}
 		
 		if(moved) {
+			Sound.playerWalk.play();
 			animationFrames++;
 			if(animationFrames == maxAnimationFrames) {
 				animationFrames = 0;
@@ -141,6 +148,8 @@ public class Player extends Entity{
 				Bullet bullet = new Bullet(this.getX() + px, this.getY() + py, 3, 3, null, dx, 0);
 				
 				Game.bullets.add(bullet);
+				Sound.playerShoot.play();
+				System.out.println("Atirando");
 			}
 			
 		}
@@ -161,9 +170,10 @@ public class Player extends Entity{
 			if(Entity.isColliding(this, currentAmmo)) {
 				ammo += Ammunition.ammunitionSize;
 				
-				if(ammo > Ammunition.maxAmmunition) {
+				/*if(ammo > Ammunition.maxAmmunition) {
 					ammo = Ammunition.maxAmmunition;
-				}
+				}*/
+				Sound.gunLoad.play();
 				
 				Game.ammunition.remove(currentAmmo);
 				Game.entities.remove(currentAmmo);
@@ -183,6 +193,8 @@ public class Player extends Entity{
 					Game.player.life = Game.player.maxLife;
 				}
 				
+				Sound.lifePackRecovered.play();
+				
 				Game.lifepacks.remove(lifepack);
 				Game.entities.remove(lifepack);
 					
@@ -197,6 +209,7 @@ public class Player extends Entity{
 			
 			if(Entity.isColliding(this, waepon)) {
 				hasGun = true;
+				Sound.weaponRecovered.play();
 				
 				Game.waepons.remove(waepon);
 				Game.entities.remove(waepon);

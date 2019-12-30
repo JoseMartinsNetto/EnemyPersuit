@@ -54,6 +54,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public UI ui;
 	
 	public Game() {
+		Sound.musicBackGround.loop();
 		rand  = new Random();
 		addKeyListener(this);
 		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
@@ -78,6 +79,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		player = new Player(0,0,16,16, spritesheet.getSprite(32, 0, 16, 16));	
 		entities.add(player);
 		world = new World("/"+level);
+		player.updateCamera();
 	}
 	
 	public synchronized void start() {
@@ -120,6 +122,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				CUR_LEVEL++;
 				if(CUR_LEVEL > MAX_LEVEL) {
 					CUR_LEVEL = 1;
+					gameState = "MENU";
 				}
 				
 				String newWorld = "level"+CUR_LEVEL+".png";
@@ -260,6 +263,17 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		
 		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
 			restartGame = true;
+
+			if(gameState == "MENU") {
+				menu.enter = true;
+			}
+		}
+		
+		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			if(gameState == "NORMAL") {
+				gameState = "MENU";
+				menu.pause = true;
+			}
 		}
 		
 	}

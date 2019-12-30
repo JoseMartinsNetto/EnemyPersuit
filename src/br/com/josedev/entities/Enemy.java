@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import br.com.josedev.main.Game;
+import br.com.josedev.main.Sound;
 import br.com.josedev.world.*;
 
 public class Enemy extends Entity {
@@ -81,6 +82,7 @@ public class Enemy extends Entity {
 		if(shouldMakeDamage) {
 			Game.player.life -= Game.rand.nextInt(5);
 			Game.player.isDamaged = true;
+			Sound.hurtEffect.play();
 		}
 	}
 	
@@ -119,6 +121,7 @@ public class Enemy extends Entity {
 				isDamage = true;
 				life -= Bullet.DAMAGE;
 				Game.bullets.remove(i);
+				Sound.enemyHit.play();
 				return;
 			}
 		}

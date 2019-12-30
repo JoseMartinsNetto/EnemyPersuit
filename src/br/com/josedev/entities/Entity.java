@@ -56,7 +56,6 @@ public class Entity {
 		this.y = newY;
 	}
 	
-	
 	public int getX() {
 		return (int)this.x;
 	}
