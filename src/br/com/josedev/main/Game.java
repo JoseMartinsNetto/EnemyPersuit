@@ -14,6 +14,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
+import java.io.BufferedWriter;
+
 import br.com.josedev.entities.*;
 import br.com.josedev.graphics.*;
 import br.com.josedev.world.World;
@@ -95,6 +97,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public static void saveGame(String[] val1, int[] val2, int encode) {
+		BufferedWriter writer = null;
 	}
 	
 	public void initFrame() {

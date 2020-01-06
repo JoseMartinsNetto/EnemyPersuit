@@ -149,7 +149,6 @@ public class Player extends Entity{
 				
 				Game.bullets.add(bullet);
 				Sound.playerShoot.play();
-				System.out.println("Atirando");
 			}
 			
 		}
