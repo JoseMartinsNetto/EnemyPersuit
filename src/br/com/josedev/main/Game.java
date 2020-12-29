@@ -7,14 +7,11 @@ import javax.swing.JFrame;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 
 import br.com.josedev.entities.*;
 import br.com.josedev.graphics.*;
@@ -39,9 +36,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static List<Weapon> waepons;
 	public static List<Ammunition> ammunition;
 
-	public static String gameState = "MENU";
-	private boolean showMessageGameOver = true;
-	private int framesGameOver = 0;
+	public static GameState gameState = GameState.Loading;
+	private boolean toggleGameOver = true;
+	private int framesToggleGameOver = 0;
 	private boolean restartGame = false;
 
 	public static Spritesheet spritesheet;
@@ -118,22 +115,22 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		frame.setVisible(true);
 	}
 
-	public void tick() {
-		if (gameState == "NORMAL") {
+	public void update() {
+		if (gameState == GameState.Normal) {
 			restartGame = false;
 			for (int i = 0; i < entities.size(); i++) {
-				entities.get(i).tick();
+				entities.get(i).update();
 			}
 
 			for (int i = 0; i < bullets.size(); i++) {
-				bullets.get(i).tick();
+				bullets.get(i).update();
 			}
 
 			if (enemies.size() == 0) {
 				CUR_LEVEL++;
 				if (CUR_LEVEL > MAX_LEVEL) {
 					CUR_LEVEL = 1;
-					gameState = "MENU";
+					gameState = GameState.Menu;
 				}
 
 				String newWorld = "level" + CUR_LEVEL + ".png";
@@ -141,23 +138,24 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 				startOrRestartGame(newWorld);
 			}
-		} else if (gameState == "GAME OVER") {
-			framesGameOver++;
-			if (framesGameOver == 30) {
-				framesGameOver = 0;
-				if (showMessageGameOver) {
-					showMessageGameOver = false;
+		} else if (gameState == GameState.GameOver) {
+			framesToggleGameOver++;
+
+			if (framesToggleGameOver == 30) {
+				framesToggleGameOver = 0;
+				if (toggleGameOver) {
+					toggleGameOver = false;
 				} else {
-					showMessageGameOver = true;
+					toggleGameOver = true;
 				}
 			}
 
 			if (restartGame) {
-				gameState = "NORMAL";
+				gameState = GameState.Normal;
 				startOrRestartGame(curLevelName);
 			}
-		} else if (gameState == "MENU") {
-			menu.tick();
+		} else if (gameState == GameState.Menu) {
+			menu.update();
 		}
 
 	}
@@ -190,19 +188,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
 
 		ui.render(g);
-		if (gameState == "GAME OVER") {
-			Graphics2D g2 = (Graphics2D) g;
-			g2.setColor(new Color(0, 0, 0, 100));
-			g2.fillRect(0, 00, WIDTH * SCALE, HEIGHT * SCALE);
 
-			g.setColor(Color.white);
-			g.setFont(new Font("arial", Font.BOLD, 20));
-			g.drawString("GAME OVER", (WIDTH * SCALE) / 2 - 50, (HEIGHT * SCALE) / 2 - 20);
-			g.setFont(new Font("arial", Font.BOLD, 25));
-			if (showMessageGameOver) {
-				g.drawString("> Pressione Enter para reiniciar <", (WIDTH * SCALE) / 2 - 180, (HEIGHT * SCALE) / 2 + 20);
-			}
-		} else if (gameState == "MENU") {
+		if (gameState == GameState.Loading) {
+			ui.renderLoading(g);
+		} else if (gameState == GameState.GameOver) {
+			ui.renderGameOver(g, toggleGameOver);
+		} else if (gameState == GameState.Menu) {
 			menu.render(g);
 		}
 
@@ -212,32 +203,39 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	@Override
 	public void run() {
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 60.0;
-		double ns = 1000000000 / amountOfTicks;
+		double amountOfupdates = 60.0;
+		double ns = 1000000000 / amountOfupdates;
 		double delta = 0;
 		int frames = 0;
 		double timer = System.currentTimeMillis();
 		requestFocus();
+		boolean firstRun = true;
+
 		while (isRunning) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
 
 			if (delta >= 1) {
-				tick();
+				update();
 				render();
 				frames++;
 				delta--;
 			}
 
+			if ((frames >= 55 && frames <= 65) && firstRun) {
+				gameState = GameState.Menu;
+				firstRun = false;
+			}
+
 			if (System.currentTimeMillis() - timer >= 1000) {
-				System.out.println("FPS: " + frames);
+				Debug.log("FPS: " + frames);
 				frames = 0;
 				timer += 1000;
 			}
 		}
-		stop();
 
+		stop();
 	}
 
 	@Override
@@ -251,13 +249,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
 			player.up = true;
-			if (gameState == "MENU") {
+			if (gameState == GameState.Menu) {
 				menu.up = true;
 			}
 
 		} else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
 			player.down = true;
-			if (gameState == "MENU") {
+			if (gameState == GameState.Menu) {
 				menu.down = true;
 			}
 		}
@@ -269,14 +267,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			restartGame = true;
 
-			if (gameState == "MENU") {
+			if (gameState == GameState.Menu) {
 				menu.enter = true;
 			}
 		}
 
 		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			if (gameState == "NORMAL") {
-				gameState = "MENU";
+			if (gameState == GameState.Normal) {
+				gameState = GameState.Menu;
 				menu.pause = true;
 			}
 		}

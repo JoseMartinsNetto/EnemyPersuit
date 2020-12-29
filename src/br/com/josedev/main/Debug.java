@@ -13,11 +13,15 @@ public class Debug {
     System.out.println(arg);
   }
 
-  public static void log(Float arg) {
+  public static void log(float arg) {
     System.out.println(arg);
   }
 
-  public static void log(Double arg) {
+  public static void log(double arg) {
+    System.out.println(arg);
+  }
+
+  public static void log(boolean arg) {
     System.out.println(arg);
   }
 }

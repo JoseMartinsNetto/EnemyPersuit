@@ -37,7 +37,7 @@ public class Player extends Entity {
 		setupAnimations();
 	}
 
-	public void tick() {
+	public void update() {
 		generateAndCheckAnimations();
 		checkColisionWithLifePack();
 		checkColisionLifeWithAmmunition();
@@ -45,7 +45,7 @@ public class Player extends Entity {
 
 		if (life <= 0) {
 			life = 0;
-			Game.gameState = "GAME OVER";
+			Game.gameState = GameState.GameOver;
 		}
 
 		updateCamera();
