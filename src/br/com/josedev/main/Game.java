@@ -89,7 +89,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		thread = new Thread(this);
 		isRunning = true;
 		thread.start();
-		Sound.musicBackground.loop();
 	}
 
 	public synchronized void stop() {
@@ -226,6 +225,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			if ((frames >= 55 && frames <= 65) && firstRun) {
 				gameState = GameState.Menu;
 				firstRun = false;
+				Sound.musicBackground.loop(0.8f);
 			}
 
 			if (System.currentTimeMillis() - timer >= 1000) {
@@ -276,6 +276,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			if (gameState == GameState.Normal) {
 				gameState = GameState.Menu;
 				menu.pause = true;
+				Sound.musicBackground.pause();
 			}
 		}
 

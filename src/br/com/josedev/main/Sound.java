@@ -5,26 +5,57 @@ import javax.sound.sampled.*;
 
 public class Sound {
 
-	public static final Clips musicBackground = load("/hadouken-theme.wav", 1);
-	public static final Clips hurtEffect = load("/hurt.wav", 1);
-	public static final Clips playerShoot = load("/shot.wav", 1);
-	public static final Clips lifePackRecovered = load("/lifepack.wav", 1);
-	public static final Clips gunLoad = load("/gun_load.wav", 1);
-	public static final Clips weaponRecovered = load("/weapon-recovered.wav", 1);
-	public static final Clips enemyHit = load("/enemy-hit.wav", 1);
-	public static final Clips playerWalk = load("/player-walk.wav", 1);
+	public static final AudioStream musicBackground = load("/hadouken-theme.wav", 1);
+	public static final AudioStream hurtEffect = load("/hurt.wav", 1);
+	public static final AudioStream playerShoot = load("/shot.wav", 1);
+	public static final AudioStream lifePackRecovered = load("/lifepack.wav", 1);
+	public static final AudioStream gunLoad = load("/gun_load.wav", 1);
+	public static final AudioStream weaponRecovered = load("/weapon-recovered.wav", 1);
+	public static final AudioStream enemyHit = load("/enemy-hit.wav", 1);
+	public static final AudioStream playerWalk = load("/player-walk.wav", 1);
 
-	public static class Clips {
+	private static AudioStream load(String name, int count) {
+		try {
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			DataInputStream inputStream = new DataInputStream(Sound.class.getResourceAsStream(name));
+
+			byte[] buffer = new byte[1024];
+			int read = 0;
+
+			while ((read = inputStream.read(buffer)) >= 0) {
+				outputStream.write(buffer, 0, read);
+			}
+
+			inputStream.close();
+
+			byte[] data = outputStream.toByteArray();
+
+			return new AudioStream(data, count);
+
+		} catch (Exception e) {
+			try {
+				return new AudioStream(null, 0);
+			} catch (Exception ee) {
+				return null;
+			}
+		}
+	}
+
+	public static class AudioStream {
 		private Clip[] clips;
-		private int p;
+		private int audioCounter;
 		private int count;
+		private int[] framePositions;
 
-		public Clips(byte[] buffer, int count) throws LineUnavailableException, IOException, UnsupportedAudioFileException {
+		public AudioStream(byte[] buffer, int count)
+				throws LineUnavailableException, IOException, UnsupportedAudioFileException {
 			if (buffer == null)
 				return;
 
 			clips = new Clip[count];
 			this.count = count;
+
+			framePositions = new int[count];
 
 			for (int i = 0; i < count; i++) {
 				clips[i] = AudioSystem.getClip();
@@ -36,50 +67,57 @@ public class Sound {
 			if (clips == null)
 				return;
 
-			clips[p].stop();
-			clips[p].setFramePosition(0);
-			clips[p].start();
-			p++;
+			new Thread() {
+				public void run() {
+					// stop();
+					clips[audioCounter].stop();
+					clips[audioCounter].setFramePosition(0);
+					clips[audioCounter].start();
+					audioCounter++;
 
-			if (p >= count) {
-				p = 0;
-			}
+					if (audioCounter >= count) {
+						audioCounter = 0;
+					}
+				}
+			}.start();
+		}
+
+		public void pause() {
+			clips[audioCounter].stop();
+		}
+
+		public void resume() {
+			if (clips == null)
+				return;
+
+			clips[audioCounter].start();
+		}
+
+		public void stop() {
+			clips[audioCounter].stop();
+			clips[audioCounter].setFramePosition(0);
 		}
 
 		public void loop() {
 			if (clips == null)
 				return;
 
-			clips[p].loop(300);
+			clips[audioCounter].loop(300);
 		}
 
-	}
+		public void loop(float volume) {
+			if (clips == null)
+				return;
 
-	private static Clips load(String name, int count) {
-		try {
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			DataInputStream dis = new DataInputStream(Sound.class.getResourceAsStream(name));
+			FloatControl gainControl = (FloatControl) clips[audioCounter].getControl(FloatControl.Type.MASTER_GAIN);
 
-			byte[] buffer = new byte[1024];
-			int read = 0;
+			float range = gainControl.getMaximum() - gainControl.getMinimum();
+			float gain = (range * volume) + gainControl.getMinimum();
+			gainControl.setValue(gain);
 
-			while ((read = dis.read(buffer)) >= 0) {
-				baos.write(buffer, 0, read);
-			}
-
-			dis.close();
-
-			byte[] data = baos.toByteArray();
-
-			return new Clips(data, count);
-
-		} catch (Exception e) {
-			try {
-				return new Clips(null, 0);
-			} catch (Exception ee) {
-				return null;
-			}
+			clips[audioCounter].loop(300);
 		}
+
 	}
 
 }

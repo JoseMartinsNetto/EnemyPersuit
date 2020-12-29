@@ -3,6 +3,8 @@ package br.com.josedev.entities;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+
+import br.com.josedev.main.Debug;
 import br.com.josedev.main.Game;
 import br.com.josedev.main.Sound;
 import br.com.josedev.world.*;
@@ -82,6 +84,9 @@ public class Enemy extends Entity {
 		if (shouldMakeDamage) {
 			Game.player.life -= Game.rand.nextInt(5);
 			Game.player.isDamaged = true;
+
+			Debug.log("Dano sofrido: " + Game.rand.nextInt(5));
+
 			Sound.hurtEffect.play();
 		}
 	}

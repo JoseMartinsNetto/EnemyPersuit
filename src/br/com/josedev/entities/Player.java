@@ -9,7 +9,7 @@ import br.com.josedev.world.*;
 public class Player extends Entity {
 	public boolean up = false, down = false, left = false, rigth = false;
 
-	public double speed = 1.4;
+	public double speed = 0.8;
 	private int animationFrames = 0, maxAnimationFrames = 5, indexAnimation = 0, maxIndexAnimation = 3;
 
 	public int rightDir = 0, leftDir = 1;
@@ -90,9 +90,6 @@ public class Player extends Entity {
 
 		for (int i = 0; i < 4; i++) {
 			rightAnimationPlayer[i] = Game.spritesheet.getSprite(32 + (i * 16), 0, 16, 16);
-		}
-
-		for (int i = 0; i < 4; i++) {
 			leftAnimationPlayer[i] = Game.spritesheet.getSprite(32 + (i * 16), 16, 16, 16);
 		}
 	}
@@ -126,8 +123,6 @@ public class Player extends Entity {
 			if (walkCounter == walkCounterLimit) {
 				walkCounter = 0;
 			}
-
-			Debug.log(walkCounter);
 
 			animationFrames++;
 			if (animationFrames == maxAnimationFrames) {

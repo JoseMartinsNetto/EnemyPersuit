@@ -34,6 +34,8 @@ public class Menu {
 			if (options[currentOption] == options[0]) {
 				Game.gameState = GameState.Normal;
 				pause = false;
+
+				Sound.musicBackground.resume();
 			} else if (options[currentOption] == options[2]) {
 				System.exit(1);
 			}
