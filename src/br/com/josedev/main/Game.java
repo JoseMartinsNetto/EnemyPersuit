@@ -31,35 +31,34 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	private Thread thread;
 	private boolean isRunning = false;
 	private BufferedImage image;
-	
+
 	public static List<Entity> entities;
 	public static List<Enemy> enemies;
 	public static List<Lifepack> lifepacks;
 	public static List<Bullet> bullets;
 	public static List<Weapon> waepons;
 	public static List<Ammunition> ammunition;
-	
+
 	public static String gameState = "MENU";
 	private boolean showMessageGameOver = true;
 	private int framesGameOver = 0;
 	private boolean restartGame = false;
-	
+
 	public static Spritesheet spritesheet;
 	public static Player player;
-	
+
 	public static World world;
-	
+
 	public static Random rand;
-	
+
 	public Menu menu;
-	
+
 	public UI ui;
-	
+
 	public Game() {
-		Sound.musicBackGround.loop();
-		rand  = new Random();
+		rand = new Random();
 		addKeyListener(this);
-		setPreferredSize(new Dimension(WIDTH*SCALE, HEIGHT*SCALE));
+		setPreferredSize(new Dimension(WIDTH * SCALE, HEIGHT * SCALE));
 		initFrame();
 
 		ui = new UI();
@@ -67,29 +66,35 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 		startOrRestartGame("level1.png");
 	}
-	
+
+	public static void main(String[] args) {
+		Game game = new Game();
+		game.start();
+	}
+
 	public static void startOrRestartGame(String level) {
 		curLevelName = level;
-		entities = new ArrayList<Entity> ();
-		enemies = new ArrayList<Enemy> ();
-		lifepacks = new ArrayList<Lifepack> ();
-		bullets = new ArrayList<Bullet> ();
-		waepons = new ArrayList<Weapon> ();
-		ammunition = new ArrayList<Ammunition> ();
-		
+		entities = new ArrayList<Entity>();
+		enemies = new ArrayList<Enemy>();
+		lifepacks = new ArrayList<Lifepack>();
+		bullets = new ArrayList<Bullet>();
+		waepons = new ArrayList<Weapon>();
+		ammunition = new ArrayList<Ammunition>();
+
 		spritesheet = new Spritesheet("/spritesheet.png");
-		player = new Player(0,0,16,16, spritesheet.getSprite(32, 0, 16, 16));	
+		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
 		entities.add(player);
-		world = new World("/"+level);
+		world = new World("/" + level);
 		player.updateCamera();
 	}
-	
+
 	public synchronized void start() {
 		thread = new Thread(this);
 		isRunning = true;
 		thread.start();
+		Sound.musicBackground.loop();
 	}
-	
+
 	public synchronized void stop() {
 		isRunning = false;
 		try {
@@ -98,11 +103,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static void saveGame(String[] val1, int[] val2, int encode) {
-		BufferedWriter writer = null;
+		// BufferedWriter writer = null;
 	}
-	
+
 	public void initFrame() {
 		frame = new JFrame("Enemy persuit");
 		frame.add(this);
@@ -112,102 +117,96 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setVisible(true);
 	}
-	
+
 	public void tick() {
-		if(gameState == "NORMAL") {
+		if (gameState == "NORMAL") {
 			restartGame = false;
 			for (int i = 0; i < entities.size(); i++) {
 				entities.get(i).tick();
 			}
-			
+
 			for (int i = 0; i < bullets.size(); i++) {
 				bullets.get(i).tick();
 			}
-			
-			if(enemies.size() == 0) {
+
+			if (enemies.size() == 0) {
 				CUR_LEVEL++;
-				if(CUR_LEVEL > MAX_LEVEL) {
+				if (CUR_LEVEL > MAX_LEVEL) {
 					CUR_LEVEL = 1;
 					gameState = "MENU";
 				}
-				
-				String newWorld = "level"+CUR_LEVEL+".png";
+
+				String newWorld = "level" + CUR_LEVEL + ".png";
 				curLevelName = newWorld;
-				
+
 				startOrRestartGame(newWorld);
 			}
 		} else if (gameState == "GAME OVER") {
 			framesGameOver++;
-			if(framesGameOver == 30) {
+			if (framesGameOver == 30) {
 				framesGameOver = 0;
-				if(showMessageGameOver) {
+				if (showMessageGameOver) {
 					showMessageGameOver = false;
-				}else {
+				} else {
 					showMessageGameOver = true;
 				}
 			}
-			
-			if(restartGame) {
+
+			if (restartGame) {
 				gameState = "NORMAL";
 				startOrRestartGame(curLevelName);
 			}
 		} else if (gameState == "MENU") {
 			menu.tick();
 		}
-		
-		
+
 	}
-	
+
 	public void render() {
 		BufferStrategy bs = this.getBufferStrategy();
-		
-		if(bs == null) {
+
+		if (bs == null) {
 			this.createBufferStrategy(3);
 			return;
 		}
-		
+
 		Graphics g = image.getGraphics();
-		g.setColor(new Color(0,0,0));
+		g.setColor(new Color(0, 0, 0));
 		g.fillRect(0, 0, WIDTH, HEIGHT);
-		
+
 		// Rendering the items of the game
 		world.render(g);
-		
+
 		for (int i = 0; i < entities.size(); i++) {
 			entities.get(i).render(g);
 		}
-		
+
 		for (int i = 0; i < bullets.size(); i++) {
 			bullets.get(i).render(g);
 		}
-		
+
 		g.dispose();
 		g = bs.getDrawGraphics();
-		g.drawImage(image, 0, 0, WIDTH*SCALE, HEIGHT*SCALE, null);
-		
+		g.drawImage(image, 0, 0, WIDTH * SCALE, HEIGHT * SCALE, null);
+
 		ui.render(g);
-		 if (gameState == "GAME OVER") {
-			 Graphics2D g2 = (Graphics2D) g;
-			g2.setColor(new Color(0,0,0,100));
-			g2.fillRect(0, 00, WIDTH*SCALE, HEIGHT*SCALE);
-			 
+		if (gameState == "GAME OVER") {
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor(new Color(0, 0, 0, 100));
+			g2.fillRect(0, 00, WIDTH * SCALE, HEIGHT * SCALE);
+
 			g.setColor(Color.white);
 			g.setFont(new Font("arial", Font.BOLD, 20));
-			g.drawString("GAME OVER",  (WIDTH*SCALE) / 2 - 50, (HEIGHT*SCALE) / 2 - 20);
+			g.drawString("GAME OVER", (WIDTH * SCALE) / 2 - 50, (HEIGHT * SCALE) / 2 - 20);
 			g.setFont(new Font("arial", Font.BOLD, 25));
 			if (showMessageGameOver) {
-				g.drawString("> Pressione Enter para reiniciar <",  (WIDTH*SCALE) / 2 - 180, (HEIGHT*SCALE) / 2 + 20);
+				g.drawString("> Pressione Enter para reiniciar <", (WIDTH * SCALE) / 2 - 180, (HEIGHT * SCALE) / 2 + 20);
 			}
-		 } else if (gameState == "MENU") {
-			 menu.render(g);
-		 }
-		
-		bs.show();
-	}
+		} else if (gameState == "MENU") {
+			menu.render(g);
+		}
 
-	public static void main(String[] args) {
-		Game game = new Game();
-		game.start();
+		bs.show();
 	}
 
 	@Override
@@ -223,14 +222,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
-			
-			if(delta >= 1) {
+
+			if (delta >= 1) {
 				tick();
 				render();
 				frames++;
 				delta--;
 			}
-			
+
 			if (System.currentTimeMillis() - timer >= 1000) {
 				System.out.println("FPS: " + frames);
 				frames = 0;
@@ -238,74 +237,73 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			}
 		}
 		stop();
-		
+
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_RIGHT ||  e.getKeyCode() == KeyEvent.VK_D) {
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
 			player.rigth = true;
-			
-		} else if(e.getKeyCode() == KeyEvent.VK_LEFT ||  e.getKeyCode() == KeyEvent.VK_A) {
+
+		} else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 			player.left = true;
 		}
-		
-		if(e.getKeyCode() == KeyEvent.VK_UP ||  e.getKeyCode() == KeyEvent.VK_W) {
+
+		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
 			player.up = true;
-			if(gameState == "MENU") {
+			if (gameState == "MENU") {
 				menu.up = true;
 			}
-			
-		} else if(e.getKeyCode() == KeyEvent.VK_DOWN ||  e.getKeyCode() == KeyEvent.VK_S) {
+
+		} else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
 			player.down = true;
-			if(gameState == "MENU") {
+			if (gameState == "MENU") {
 				menu.down = true;
 			}
 		}
-		
-		if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+
+		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			player.isShooting = true;
 		}
-		
-		if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+
+		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			restartGame = true;
 
-			if(gameState == "MENU") {
+			if (gameState == "MENU") {
 				menu.enter = true;
 			}
 		}
-		
-		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-			if(gameState == "NORMAL") {
+
+		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+			if (gameState == "NORMAL") {
 				gameState = "MENU";
 				menu.pause = true;
 			}
 		}
-		
+
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if(e.getKeyCode() == KeyEvent.VK_RIGHT ||  e.getKeyCode() == KeyEvent.VK_D) {
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
 			player.rigth = false;
-			
-		} else if(e.getKeyCode() == KeyEvent.VK_LEFT ||  e.getKeyCode() == KeyEvent.VK_A) {
+
+		} else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
 			player.left = false;
 		}
-		
-		if(e.getKeyCode() == KeyEvent.VK_UP ||  e.getKeyCode() == KeyEvent.VK_W) {
+
+		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
 			player.up = false;
-			
-		} else if(e.getKeyCode() == KeyEvent.VK_DOWN ||  e.getKeyCode() == KeyEvent.VK_S) {
+
+		} else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
 			player.down = false;
 		}
-		
+
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		
-		
+
 	}
 
 }
