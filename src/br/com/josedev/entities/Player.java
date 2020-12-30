@@ -136,12 +136,14 @@ public class Player extends Entity {
 
 		if (isShooting) {
 			isShooting = false;
+
 			if (hasGun && ammo > 0) {
 				ammo--;
 
 				int dx = 0;
 				int px = 0;
 				int py = 6;
+
 				if (dir == rightDir) {
 					px = 18;
 					dx = 1;
@@ -154,8 +156,8 @@ public class Player extends Entity {
 
 				Game.bullets.add(bullet);
 				Sound.playerShoot.play();
-			}
 
+			}
 		}
 
 		if (isDamaged) {

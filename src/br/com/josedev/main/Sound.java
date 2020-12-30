@@ -45,7 +45,6 @@ public class Sound {
 		private Clip[] clips;
 		private int audioCounter;
 		private int count;
-		private int[] framePositions;
 
 		public AudioStream(byte[] buffer, int count)
 				throws LineUnavailableException, IOException, UnsupportedAudioFileException {
@@ -54,8 +53,6 @@ public class Sound {
 
 			clips = new Clip[count];
 			this.count = count;
-
-			framePositions = new int[count];
 
 			for (int i = 0; i < count; i++) {
 				clips[i] = AudioSystem.getClip();
@@ -67,19 +64,14 @@ public class Sound {
 			if (clips == null)
 				return;
 
-			new Thread() {
-				public void run() {
-					// stop();
-					clips[audioCounter].stop();
-					clips[audioCounter].setFramePosition(0);
-					clips[audioCounter].start();
-					audioCounter++;
+			clips[audioCounter].stop();
+			clips[audioCounter].setFramePosition(0);
+			clips[audioCounter].start();
+			audioCounter++;
 
-					if (audioCounter >= count) {
-						audioCounter = 0;
-					}
-				}
-			}.start();
+			if (audioCounter >= count) {
+				audioCounter = 0;
+			}
 		}
 
 		public void pause() {
