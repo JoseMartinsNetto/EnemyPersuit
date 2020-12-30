@@ -136,7 +136,6 @@ public class Player extends Entity {
 
 		if (isShooting) {
 			isShooting = false;
-
 			if (hasGun && ammo > 0) {
 				ammo--;
 

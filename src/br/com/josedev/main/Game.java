@@ -203,6 +203,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public void run() {
 		long lastTime = System.nanoTime();
 		double amountOfupdates = 60.0;
+		double minFrameUpdates = 55.0;
 		double ns = 1000000000 / amountOfupdates;
 		double delta = 0;
 		int frames = 0;
@@ -222,13 +223,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				delta--;
 			}
 
-			if ((frames >= 55 && frames <= 65) && firstRun) {
+			if ((frames >= minFrameUpdates && frames <= amountOfupdates) && firstRun) {
 				gameState = GameState.Menu;
 				firstRun = false;
 				Sound.musicBackground.loop(0.8f);
 			}
 
-			if (System.currentTimeMillis() - timer >= 1000) {
+			if (System.currentTimeMillis() - timer >= 1000 || frames >= amountOfupdates) {
 				Debug.log("FPS: " + frames);
 				frames = 0;
 				timer += 1000;

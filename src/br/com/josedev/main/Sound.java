@@ -94,7 +94,7 @@ public class Sound {
 			if (clips == null)
 				return;
 
-			clips[audioCounter].loop(300);
+			clips[audioCounter].loop(Clip.LOOP_CONTINUOUSLY);
 		}
 
 		public void loop(float volume) {
