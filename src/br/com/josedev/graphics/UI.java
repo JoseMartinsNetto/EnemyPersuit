@@ -14,7 +14,7 @@ public class UI {
 
 	private void renderLife(Graphics g) {
 		int sizeOfLifeBar = 120;
-		int lifePercentage = (int) ((Game.player.life / Game.player.maxLife) * sizeOfLifeBar);
+		int lifePercentage = (int) ((Game.player.getLife() / Game.player.getMaxLife()) * sizeOfLifeBar);
 
 		g.setColor(Color.red);
 		g.fillRect(10, 4, sizeOfLifeBar, 20);
@@ -25,7 +25,7 @@ public class UI {
 		g.setColor(Color.white);
 		g.setFont(new Font("arial", Font.BOLD, 20));
 
-		g.drawString((int) Game.player.life + "/" + (int) Game.player.maxLife, 45, 21);
+		g.drawString((int) Game.player.getLife()  + "/" + (int) Game.player.getMaxLife(), 45, 21);
 	}
 
 	private void renderAmmo(Graphics g) {

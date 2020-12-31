@@ -8,37 +8,47 @@ import br.com.josedev.world.*;
 
 public class Player extends Entity {
 	public boolean up = false, down = false, left = false, rigth = false;
-
+	public boolean isDamaged = false;
+	public boolean isShooting = false;
+	
 	public double speed = 0.8;
-	private int animationFrames = 0, maxAnimationFrames = 5, indexAnimation = 0, maxIndexAnimation = 3;
-
+	
 	public int rightDir = 0, leftDir = 1;
 	public int dir = rightDir;
+	public int ammo = 0;
+	
+	private int animationFrames = 0, maxAnimationFrames = 5, indexAnimation = 0, maxIndexAnimation = 3;
+	private int walkCounter = 0, walkCounterLimit = 20;
+	private int damegedFrames = 0;
+	private double life = 100, maxLife = 100;
+	
+	private boolean moved = false;
+	private boolean hasGun = false;
 
 	private BufferedImage[] rightAnimationPlayer;
 	private BufferedImage[] leftAnimationPlayer;
-
 	private BufferedImage damagedPlayer;
-	private int damegedFrames = 0;
 
-	public boolean isDamaged = false;
-	private boolean moved = false;
-
-	public double life = 100, maxLife = 100;
-	public int ammo = 0;
-
-	private boolean hasGun = false;
-	public boolean isShooting = false;
-
-	private int walkCounter = 0, walkCounterLimit = 20;
 
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
 		setupAnimations();
 	}
+	
+	public double getLife() {
+		return life;
+	}
+	
+	public double getMaxLife() {
+		return maxLife;
+	}
 
 	public void update() {
-		generateAndCheckAnimations();
+		animateMove();
+		animateDamage();
+		
+		shootingCheck();
+		
 		checkColisionWithLifePack();
 		checkColisionLifeWithAmmunition();
 		checkColisionWithWeapon();
@@ -51,12 +61,7 @@ public class Player extends Entity {
 		updateCamera();
 
 	}
-
-	public void updateCamera() {
-		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH / 2), 0, World.WIDTH * 16 - Game.WIDTH);
-		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT / 2), 0, World.HEIGHT * 16 - Game.HEIGHT);
-	}
-
+	
 	public void render(Graphics g) {
 		if (isDamaged) {
 			g.drawImage(damagedPlayer, this.getX() - Camera.x, this.getY() - Camera.y, null);
@@ -81,6 +86,17 @@ public class Player extends Entity {
 			}
 		}
 	}
+	
+
+	
+	public void reciveDamage(int damage) {
+		life -= damage;
+	}
+
+	public void updateCamera() {
+		Camera.x = Camera.clamp(this.getX() - (Game.WIDTH / 2), 0, World.WIDTH * 16 - Game.WIDTH);
+		Camera.y = Camera.clamp(this.getY() - (Game.HEIGHT / 2), 0, World.HEIGHT * 16 - Game.HEIGHT);
+	}
 
 	private void setupAnimations() {
 		rightAnimationPlayer = new BufferedImage[4];
@@ -93,8 +109,8 @@ public class Player extends Entity {
 			leftAnimationPlayer[i] = Game.spritesheet.getSprite(32 + (i * 16), 16, 16, 16);
 		}
 	}
-
-	private void generateAndCheckAnimations() {
+	
+	private void animateMove() {
 		moved = false;
 		if (up && World.isFree(this.getX(), (int) (y - speed))) {
 			moved = true;
@@ -133,7 +149,19 @@ public class Player extends Entity {
 				}
 			}
 		}
-
+	}
+	
+	private void animateDamage() {
+		if (isDamaged) {
+			damegedFrames++;
+			if (damegedFrames == 3) {
+				damegedFrames = 0;
+				isDamaged = false;
+			}
+		}
+	}
+	
+	private void shootingCheck() {
 		if (isShooting) {
 			isShooting = false;
 			if (hasGun && ammo > 0) {
@@ -156,14 +184,6 @@ public class Player extends Entity {
 				Game.bullets.add(bullet);
 				Sound.playerShoot.play();
 
-			}
-		}
-
-		if (isDamaged) {
-			damegedFrames++;
-			if (damegedFrames == 3) {
-				damegedFrames = 0;
-				isDamaged = false;
 			}
 		}
 	}

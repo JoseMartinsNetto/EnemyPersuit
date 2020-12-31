@@ -13,17 +13,18 @@ public class Entity {
 	protected int width;
 	protected int height;
 	protected BufferedImage sprite;
+	
 	public static final int TILE_SIZE = 16;
 
-	public static BufferedImage LIFEPACK_EN = Game.spritesheet.getSprite(6 * TILE_SIZE, 0, 16, TILE_SIZE);
+	public static BufferedImage LIFEPACK_EN = Game.spritesheet.getSprite(6 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE);
 	public static BufferedImage WEAPON_EN = Game.spritesheet.getSprite(7 * TILE_SIZE, 0, TILE_SIZE, TILE_SIZE);
-	public static BufferedImage AMMO_EN = Game.spritesheet.getSprite(6 * TILE_SIZE, 16, TILE_SIZE, TILE_SIZE);
-	public static BufferedImage ENEMY_EN = Game.spritesheet.getSprite(6 * TILE_SIZE, 16, TILE_SIZE, TILE_SIZE);
-	public static BufferedImage ENEMY_EN_DAMAGE = Game.spritesheet.getSprite(144, 16, TILE_SIZE, TILE_SIZE);
+	public static BufferedImage AMMO_EN = Game.spritesheet.getSprite(6 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	public static BufferedImage ENEMY_EN = Game.spritesheet.getSprite(6 * TILE_SIZE, TILE_SIZE, TILE_SIZE, TILE_SIZE);
+	public static BufferedImage ENEMY_EN_DAMAGE = Game.spritesheet.getSprite(144, TILE_SIZE, TILE_SIZE, TILE_SIZE);
 	public static BufferedImage WEAPON_RIGHT = Game.spritesheet.getSprite(128, 0, TILE_SIZE, TILE_SIZE);
 	public static BufferedImage WEAPON_LEFT = Game.spritesheet.getSprite(128 + TILE_SIZE, 0, TILE_SIZE, TILE_SIZE);
 	public static BufferedImage WEAPON_DAMAGE_RIGHT = Game.spritesheet.getSprite(0, 32, TILE_SIZE, TILE_SIZE);
-	public static BufferedImage WEAPON_DAMAGE_LEFT = Game.spritesheet.getSprite(16, 32, TILE_SIZE, TILE_SIZE);
+	public static BufferedImage WEAPON_DAMAGE_LEFT = Game.spritesheet.getSprite(TILE_SIZE, 32, TILE_SIZE, TILE_SIZE);
 
 	private int maskx, masky, mwidth, mheight;
 

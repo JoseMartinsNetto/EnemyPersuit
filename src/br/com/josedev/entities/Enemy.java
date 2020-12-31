@@ -11,16 +11,17 @@ import br.com.josedev.world.*;
 
 public class Enemy extends Entity {
 	private double speed = 1;
+	
 	private int frames = 0, maxFrames = 10, index = 0, maxIndex = 1;
+	private int damageFrames = 10, damageCurrent = 0;
+	private int life = 30;
+	
 	private BufferedImage[] animmationSprites;
 
-	private int life = 30;
 	private boolean isDamage = false;
-	private int damageFrames = 10, damageCurrent = 0;
 
 	public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
-		animmationSprites = new BufferedImage[2];
 		setAnimationSprites();
 	}
 
@@ -49,6 +50,8 @@ public class Enemy extends Entity {
 	}
 
 	private void setAnimationSprites() {
+		animmationSprites = new BufferedImage[2];
+		
 		int initalXPosition = 112;
 		int incrementsXPosition = 0;
 
@@ -82,7 +85,7 @@ public class Enemy extends Entity {
 		boolean shouldMakeDamage = probabilityOfDamage < 10;
 
 		if (shouldMakeDamage) {
-			Game.player.life -= Game.rand.nextInt(5);
+			Game.player.reciveDamage(Game.rand.nextInt(5));
 			Game.player.isDamaged = true;
 
 			Debug.log("Dano sofrido: " + Game.rand.nextInt(5));

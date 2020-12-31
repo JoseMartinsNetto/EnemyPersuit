@@ -17,40 +17,42 @@ import br.com.josedev.entities.*;
 import br.com.josedev.graphics.*;
 import br.com.josedev.world.World;
 
-public class Game extends Canvas implements Runnable, KeyListener {
-	private static final long serialVersionUID = 1L;
+public class Game extends Canvas implements Runnable, KeyListener {	
 	public static JFrame frame;
+	
 	public static final int WIDTH = 240;
 	public static final int HEIGHT = 160;
 	public static final int SCALE = 4;
-	private int CUR_LEVEL = 1, MAX_LEVEL = 2;
+	
 	public static String curLevelName;
-	private Thread thread;
-	private boolean isRunning = false;
-	private BufferedImage image;
-
+	public static GameState gameState = GameState.Loading;
+	
 	public static List<Entity> entities;
 	public static List<Enemy> enemies;
 	public static List<Lifepack> lifepacks;
 	public static List<Bullet> bullets;
 	public static List<Weapon> waepons;
 	public static List<Ammunition> ammunition;
-
-	public static GameState gameState = GameState.Loading;
-	private boolean toggleGameOver = true;
-	private int framesToggleGameOver = 0;
-	private boolean restartGame = false;
-
+	
 	public static Spritesheet spritesheet;
 	public static Player player;
-
 	public static World world;
-
 	public static Random rand;
 
 	public Menu menu;
-
 	public UI ui;
+
+	private static final long serialVersionUID = 1L;
+	private static double waitTime = 0, waitTimeLimit = 300.0;
+	
+	private int CUR_LEVEL = 1, MAX_LEVEL = 2;
+	private int framesToggleGameOver = 0;
+	private boolean toggleGameOver = true;
+	private boolean isRunning = false;
+	private boolean restartGame = false;
+	
+	private Thread thread;
+	private BufferedImage image;
 
 	public Game() {
 		rand = new Random();
@@ -61,16 +63,17 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		ui = new UI();
 		menu = new Menu();
 		image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
-		startOrRestartGame("level1.png");
+		
+		initGameLevel("level1.png");
 	}
 
 	public static void main(String[] args) {
-		Game game = new Game();
-		game.start();
+		new Game().start();
 	}
 
-	public static void startOrRestartGame(String level) {
+	public static void initGameLevel(String level) {
 		curLevelName = level;
+		
 		entities = new ArrayList<Entity>();
 		enemies = new ArrayList<Enemy>();
 		lifepacks = new ArrayList<Lifepack>();
@@ -79,10 +82,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
 		ammunition = new ArrayList<Ammunition>();
 
 		spritesheet = new Spritesheet("/spritesheet.png");
+		
 		player = new Player(0, 0, 16, 16, spritesheet.getSprite(32, 0, 16, 16));
 		entities.add(player);
+		
 		world = new World("/" + level);
 		player.updateCamera();
+		waitTime = 0.0;
 	}
 
 	public synchronized void start() {
@@ -117,6 +123,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public void update() {
 		if (gameState == GameState.Normal) {
 			restartGame = false;
+			
 			for (int i = 0; i < entities.size(); i++) {
 				entities.get(i).update();
 			}
@@ -127,15 +134,18 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 			if (enemies.size() == 0) {
 				CUR_LEVEL++;
+				
 				if (CUR_LEVEL > MAX_LEVEL) {
 					CUR_LEVEL = 1;
+					
 					gameState = GameState.Menu;
 				}
 
 				String newWorld = "level" + CUR_LEVEL + ".png";
+				
 				curLevelName = newWorld;
 
-				startOrRestartGame(newWorld);
+				initGameLevel(newWorld);
 			}
 		} else if (gameState == GameState.GameOver) {
 			framesToggleGameOver++;
@@ -151,8 +161,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 			if (restartGame) {
 				gameState = GameState.Normal;
-				startOrRestartGame(curLevelName);
+				
+				initGameLevel(curLevelName);
 			}
+			
 		} else if (gameState == GameState.Menu) {
 			menu.update();
 		}
@@ -202,14 +214,17 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	@Override
 	public void run() {
 		long lastTime = System.nanoTime();
+		int frames = 0;
+		
 		double amountOfupdates = 60.0;
 		double minFrameUpdates = 55.0;
 		double ns = 1000000000 / amountOfupdates;
-		double delta = 0;
-		int frames = 0;
 		double timer = System.currentTimeMillis();
-		requestFocus();
+		double delta = 0;
+
 		boolean firstRun = true;
+		
+		requestFocus();
 
 		while (isRunning) {
 			long now = System.nanoTime();
@@ -221,11 +236,20 @@ public class Game extends Canvas implements Runnable, KeyListener {
 				render();
 				frames++;
 				delta--;
+				waitTime ++;
+				
+				if(waitTime >= waitTimeLimit) {
+					waitTime = waitTimeLimit;
+				}
+				
 			}
+			
 
-			if ((frames >= minFrameUpdates && frames <= amountOfupdates) && firstRun) {
+			if ((frames >= minFrameUpdates && frames <= amountOfupdates) && firstRun && waitTime >= waitTimeLimit) {
 				gameState = GameState.Menu;
+				
 				firstRun = false;
+				
 				Sound.musicBackground.loop(0.8f);
 			}
 
