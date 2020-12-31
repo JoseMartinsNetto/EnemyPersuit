@@ -10,13 +10,17 @@ import br.com.josedev.main.Sound;
 import br.com.josedev.world.*;
 
 public class Enemy extends Entity {
-	private double speed = 1;
-	
-	private int frames = 0, maxFrames = 10, index = 0, maxIndex = 1;
-	private int damageFrames = 10, damageCurrent = 0;
+	private final double speed = 1;
+
+	private final int maxIndex = 1;
+	private final int damageFrames = 10;
+	private final int maxFrames = 10;
+	private int frames = 0;
+	private int index = 0;
+	private int damageCurrent = 0;
 	private int life = 30;
 	
-	private BufferedImage[] animmationSprites;
+	private BufferedImage[] animationSprites;
 
 	private boolean isDamage = false;
 
@@ -34,10 +38,10 @@ public class Enemy extends Entity {
 			return;
 		}
 
-		if (isColiddingWithPlayer()) {
+		if (isCollidingWithPlayer()) {
 			makeDamageInPlayer();
 		} else {
-			persuitPlayer();
+			pursuitPlayer();
 		}
 	}
 
@@ -45,18 +49,18 @@ public class Enemy extends Entity {
 		if (isDamage) {
 			g.drawImage(Entity.ENEMY_EN_DAMAGE, this.getX() - Camera.x, this.getY() - Camera.y, null);
 		} else {
-			g.drawImage(animmationSprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
+			g.drawImage(animationSprites[index], this.getX() - Camera.x, this.getY() - Camera.y, null);
 		}
 	}
 
 	private void setAnimationSprites() {
-		animmationSprites = new BufferedImage[2];
+		animationSprites = new BufferedImage[2];
 		
-		int initalXPosition = 112;
+		int initialXPosition = 112;
 		int incrementsXPosition = 0;
 
-		for (int i = 0; i < animmationSprites.length; i++) {
-			animmationSprites[i] = Game.spritesheet.getSprite(initalXPosition + incrementsXPosition, 16, 16, 16);
+		for (int i = 0; i < animationSprites.length; i++) {
+			animationSprites[i] = Game.spritesheet.getSprite(initialXPosition + incrementsXPosition, 16, 16, 16);
 			incrementsXPosition = 16;
 		}
 	}
@@ -88,30 +92,30 @@ public class Enemy extends Entity {
 			Game.player.reciveDamage(Game.rand.nextInt(5));
 			Game.player.isDamaged = true;
 
-			Debug.log("Dano sofrido: " + Game.rand.nextInt(5));
-
-			Sound.hurtEffect.play();
+			if (Sound.hurtEffect != null) {
+				Sound.hurtEffect.play();
+			}
 		}
 	}
 
-	private void persuitPlayer() {
-		int probabilityOfPersuit = Game.rand.nextInt(100);
-		boolean shouldPersuit = probabilityOfPersuit < 50;
+	private void pursuitPlayer() {
+		int probabilityOfPursuit = Game.rand.nextInt(100);
+		boolean shouldPursuit = probabilityOfPursuit < 50;
 
-		if (shouldPersuit) {
+		if (shouldPursuit) {
 			if ((int) x < Game.player.getX() && World.isFree((int) (x + speed), this.getY())
-					&& !isColiddingWithFriends((int) (x + speed), this.getY())) {
+					&& !isCollidingWithFriends((int) (x + speed), this.getY())) {
 				x += speed;
 			} else if ((int) x > Game.player.getX() && World.isFree((int) (x - speed), this.getY())
-					&& !isColiddingWithFriends((int) (x - speed), this.getY())) {
+					&& !isCollidingWithFriends((int) (x - speed), this.getY())) {
 				x -= speed;
 			}
 
 			if ((int) y < Game.player.getY() && World.isFree(this.getX(), (int) (y + speed))
-					&& !isColiddingWithFriends(this.getX(), (int) (y + speed))) {
+					&& !isCollidingWithFriends(this.getX(), (int) (y + speed))) {
 				y += speed;
 			} else if ((int) y > Game.player.getY() && World.isFree(this.getX(), (int) (y - speed))
-					&& !isColiddingWithFriends(this.getX(), (int) (y - speed))) {
+					&& !isCollidingWithFriends(this.getX(), (int) (y - speed))) {
 				y -= speed;
 			}
 		}
@@ -129,13 +133,15 @@ public class Enemy extends Entity {
 				isDamage = true;
 				life -= Bullet.DAMAGE;
 				Game.bullets.remove(i);
-				Sound.enemyHit.play();
+				if (Sound.enemyHit != null) {
+					Sound.enemyHit.play();
+				}
 				return;
 			}
 		}
 	}
 
-	private boolean isColiddingWithFriends(int xnext, int ynext) {
+	private boolean isCollidingWithFriends(int xnext, int ynext) {
 		Rectangle currentEnemy = new Rectangle(xnext, ynext, World.TILE_SIZE, World.TILE_SIZE);
 
 		for (int i = 0; i < Game.enemies.size(); i++) {
@@ -143,9 +149,9 @@ public class Enemy extends Entity {
 			if (e == this)
 				continue;
 
-			Rectangle targetEmeny = new Rectangle(e.getX(), e.getY(), World.TILE_SIZE, World.TILE_SIZE);
+			Rectangle targetEnemy = new Rectangle(e.getX(), e.getY(), World.TILE_SIZE, World.TILE_SIZE);
 
-			if (currentEnemy.intersects(targetEmeny)) {
+			if (currentEnemy.intersects(targetEnemy)) {
 				return true;
 			}
 		}
@@ -153,7 +159,7 @@ public class Enemy extends Entity {
 		return false;
 	}
 
-	public boolean isColiddingWithPlayer() {
+	public boolean isCollidingWithPlayer() {
 		return Entity.isColliding(this, Game.player);
 	}
 

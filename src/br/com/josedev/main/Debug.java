@@ -24,4 +24,8 @@ public class Debug {
   public static void log(boolean arg) {
     System.out.println(arg);
   }
+
+  public static void log(Object arg) {
+    System.out.println(arg);
+  }
 }

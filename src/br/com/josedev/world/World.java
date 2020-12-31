@@ -47,7 +47,7 @@ public class World {
 					} else if (currentPixel == 0xFF7F3300) {
 						// WEAPON
 						Weapon weapon = new Weapon(xx * TILE_SIZE, yy * TILE_SIZE, TILE_SIZE, TILE_SIZE, Entity.WEAPON_EN);
-						Game.waepons.add(weapon);
+						Game.weapons.add(weapon);
 						Game.entities.add(weapon);
 					} else if (currentPixel == 0xFFFFD800) {
 						// Ammunition

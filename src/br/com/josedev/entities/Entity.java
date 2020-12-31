@@ -83,7 +83,6 @@ public class Entity {
 		g.drawImage(sprite, this.getX() - Camera.x, this.getY() - Camera.y, null);
 	}
 
-	public void update() {
-	}
+	public void update() {}
 
 }

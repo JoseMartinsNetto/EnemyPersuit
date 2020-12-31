@@ -6,7 +6,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 public class Menu {
-	public String[] options = { "Novo jogo", "Carregar jogo", "Sair" };
+	public String[] options = {
+			Constants.Strings.UI.NewGame,
+			Constants.Strings.UI.LoadGame,
+			Constants.Strings.UI.Exit
+	};
+
 	public int currentOption = 0;
 	public int maxOption = options.length - 1;
 
@@ -31,12 +36,14 @@ public class Menu {
 
 		if (enter) {
 			enter = false;
-			if (options[currentOption] == options[0]) {
+			if (options[currentOption].equals(options[0])) {
 				Game.gameState = GameState.Normal;
 				pause = false;
 
-				Sound.musicBackground.resume();
-			} else if (options[currentOption] == options[2]) {
+				if (Sound.musicBackground != null) {
+					Sound.musicBackground.resume();
+				}
+			} else if (options[currentOption].equals(options[2])) {
 				System.exit(1);
 			}
 		}
@@ -50,22 +57,22 @@ public class Menu {
 
 		g.setColor(Color.white);
 		g.setFont(new Font("arial", Font.BOLD, 30));
-		g.drawString("> ENEMY PERSUIT <", (Game.WIDTH * Game.SCALE) / 2 - 140, (Game.HEIGHT * Game.SCALE) / 2 - 200);
+		g.drawString(Constants.Strings.UI.GameName, (Game.WIDTH * Game.SCALE) / 2 - 140, (Game.HEIGHT * Game.SCALE) / 2 - 200);
 
 		g.setFont(new Font("arial", Font.BOLD, 20));
 
 		if (!pause) {
 			g.drawString(options[0], (Game.WIDTH * Game.SCALE) / 2 - 50, (Game.HEIGHT * Game.SCALE) / 2 - 100);
 		} else {
-			g.drawString("Continuar", (Game.WIDTH * Game.SCALE) / 2 - 50, (Game.HEIGHT * Game.SCALE) / 2 - 100);
+			g.drawString(Constants.Strings.UI.Continue, (Game.WIDTH * Game.SCALE) / 2 - 50, (Game.HEIGHT * Game.SCALE) / 2 - 100);
 		}
 
 		g.drawString(options[1], (Game.WIDTH * Game.SCALE) / 2 - 65, (Game.HEIGHT * Game.SCALE) / 2 - 60);
 		g.drawString(options[2], (Game.WIDTH * Game.SCALE) / 2 - 20, (Game.HEIGHT * Game.SCALE) / 2 - 20);
 
-		if (options[currentOption] == options[0]) {
+		if (options[currentOption].equals(options[0])) {
 			g.drawString("> ", (Game.WIDTH * Game.SCALE) / 2 - 80, (Game.HEIGHT * Game.SCALE) / 2 - 100);
-		} else if (options[currentOption] == options[1]) {
+		} else if (options[currentOption].equals(options[1])) {
 			g.drawString("> ", (Game.WIDTH * Game.SCALE) / 2 - 90, (Game.HEIGHT * Game.SCALE) / 2 - 60);
 		} else {
 			g.drawString("> ", (Game.WIDTH * Game.SCALE) / 2 - 40, (Game.HEIGHT * Game.SCALE) / 2 - 20);

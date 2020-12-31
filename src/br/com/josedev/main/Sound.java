@@ -5,22 +5,22 @@ import javax.sound.sampled.*;
 
 public class Sound {
 
-	public static final AudioStream musicBackground = load("/hadouken-theme.wav", 1);
-	public static final AudioStream hurtEffect = load("/hurt.wav", 1);
-	public static final AudioStream playerShoot = load("/shot.wav", 1);
-	public static final AudioStream lifePackRecovered = load("/lifepack.wav", 1);
-	public static final AudioStream gunLoad = load("/gun_load.wav", 1);
-	public static final AudioStream weaponRecovered = load("/weapon-recovered.wav", 1);
-	public static final AudioStream enemyHit = load("/enemy-hit.wav", 1);
-	public static final AudioStream playerWalk = load("/player-walk.wav", 1);
+	public static final AudioStream musicBackground = load("/hadouken-theme.wav");
+	public static final AudioStream hurtEffect = load("/hurt.wav");
+	public static final AudioStream playerShoot = load("/shot.wav");
+	public static final AudioStream lifePackRecovered = load("/lifepack.wav");
+	public static final AudioStream gunLoad = load("/gun_load.wav");
+	public static final AudioStream weaponRecovered = load("/weapon-recovered.wav");
+	public static final AudioStream enemyHit = load("/enemy-hit.wav");
+	public static final AudioStream playerWalk = load("/player-walk.wav");
 
-	private static AudioStream load(String name, int count) {
+	private static AudioStream load(String name) {
 		try {
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			DataInputStream inputStream = new DataInputStream(Sound.class.getResourceAsStream(name));
 
 			byte[] buffer = new byte[1024];
-			int read = 0;
+			int read;
 
 			while ((read = inputStream.read(buffer)) >= 0) {
 				outputStream.write(buffer, 0, read);
@@ -30,7 +30,7 @@ public class Sound {
 
 			byte[] data = outputStream.toByteArray();
 
-			return new AudioStream(data, count);
+			return new AudioStream(data, 1);
 
 		} catch (Exception e) {
 			try {
@@ -107,7 +107,7 @@ public class Sound {
 			float gain = (range * volume) + gainControl.getMinimum();
 			gainControl.setValue(gain);
 
-			clips[audioCounter].loop(300);
+			clips[audioCounter].loop(Clip.LOOP_CONTINUOUSLY);
 		}
 
 	}

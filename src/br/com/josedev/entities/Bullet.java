@@ -7,9 +7,11 @@ import br.com.josedev.main.Game;
 import br.com.josedev.world.Camera;
 
 public class Bullet extends Entity {
-	private int dx, dy;
-	private double speed = 4;
-	private int life = 35, currentLife = 0;
+	private final int dx;
+	private final int dy;
+	private final double speed = 4;
+	private final int life = 35;
+	private int currentLife = 0;
 
 	public static final int DAMAGE = 10;
 
@@ -31,7 +33,6 @@ public class Bullet extends Entity {
 
 	private void destroySelf() {
 		Game.bullets.remove(this);
-		return;
 	}
 
 	public void render(Graphics g) {

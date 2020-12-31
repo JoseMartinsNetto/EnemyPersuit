@@ -19,7 +19,7 @@ public class Player extends Entity {
 	
 	private int animationFrames = 0, maxAnimationFrames = 5, indexAnimation = 0, maxIndexAnimation = 3;
 	private int walkCounter = 0, walkCounterLimit = 20;
-	private int damegedFrames = 0;
+	private int damagedFrames = 0;
 	private double life = 100, maxLife = 100;
 	
 	private boolean moved = false;
@@ -37,6 +37,10 @@ public class Player extends Entity {
 	
 	public double getLife() {
 		return life;
+	}
+
+	public boolean hasGun() {
+		return hasGun;
 	}
 	
 	public double getMaxLife() {
@@ -153,9 +157,9 @@ public class Player extends Entity {
 	
 	private void animateDamage() {
 		if (isDamaged) {
-			damegedFrames++;
-			if (damegedFrames == 3) {
-				damegedFrames = 0;
+			damagedFrames++;
+			if (damagedFrames == 3) {
+				damagedFrames = 0;
 				isDamaged = false;
 			}
 		}
@@ -229,14 +233,14 @@ public class Player extends Entity {
 	}
 
 	private void checkColisionWithWeapon() {
-		for (int i = 0; i < Game.waepons.size(); i++) {
-			Weapon waepon = Game.waepons.get(i);
+		for (int i = 0; i < Game.weapons.size(); i++) {
+			Weapon waepon = Game.weapons.get(i);
 
 			if (Entity.isColliding(this, waepon)) {
 				hasGun = true;
 				Sound.weaponRecovered.play();
 
-				Game.waepons.remove(waepon);
+				Game.weapons.remove(waepon);
 				Game.entities.remove(waepon);
 
 			}
