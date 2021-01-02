@@ -1,7 +1,10 @@
 package br.com.josedev.main;
 
-import java.io.*;
 import javax.sound.sampled.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 public class Sound {
 

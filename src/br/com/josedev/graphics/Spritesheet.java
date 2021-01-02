@@ -1,8 +1,8 @@
 package br.com.josedev.graphics;
 
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import javax.imageio.ImageIO;
 
 public class Spritesheet {
 	private BufferedImage spritesheet;

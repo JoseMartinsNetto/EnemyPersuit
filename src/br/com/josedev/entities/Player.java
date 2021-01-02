@@ -1,13 +1,16 @@
 package br.com.josedev.entities;
 
-import java.awt.Graphics;
+import br.com.josedev.main.Game;
+import br.com.josedev.main.GameState;
+import br.com.josedev.main.Sound;
+import br.com.josedev.world.Camera;
+import br.com.josedev.world.World;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 
-import br.com.josedev.main.*;
-import br.com.josedev.world.*;
-
 public class Player extends Entity {
-	public boolean up = false, down = false, left = false, rigth = false;
+	public boolean up = false, down = false, left = false, right = false;
 	public boolean isDamaged = false;
 	public boolean isShooting = false;
 	
@@ -17,10 +20,15 @@ public class Player extends Entity {
 	public int dir = rightDir;
 	public int ammo = 0;
 	
-	private int animationFrames = 0, maxAnimationFrames = 5, indexAnimation = 0, maxIndexAnimation = 3;
-	private int walkCounter = 0, walkCounterLimit = 20;
+	private int animationFrames = 0;
+	private final int maxAnimationFrames = 5;
+	private int indexAnimation = 0;
+	private final int maxIndexAnimation = 3;
+	private int walkCounter = 0;
+	private final int walkCounterLimit = 20;
 	private int damagedFrames = 0;
-	private double life = 100, maxLife = 100;
+	private double life = 100;
+	private final double maxLife = 100;
 	
 	private boolean moved = false;
 	private boolean hasGun = false;
@@ -33,6 +41,7 @@ public class Player extends Entity {
 	public Player(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
 		setupAnimations();
+		setMask(3,0, 10,16);
 	}
 	
 	public double getLife() {
@@ -53,9 +62,9 @@ public class Player extends Entity {
 		
 		shootingCheck();
 		
-		checkColisionWithLifePack();
-		checkColisionLifeWithAmmunition();
-		checkColisionWithWeapon();
+		checkCollisionWithLifePack();
+		checkCollisionLifeWithAmmunition();
+		checkCollisionWithWeapon();
 
 		if (life <= 0) {
 			life = 0;
@@ -67,6 +76,10 @@ public class Player extends Entity {
 	}
 	
 	public void render(Graphics g) {
+
+		g.setColor(Color.blue);
+		g.fillRect(this.getX() + maskx  - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
+
 		if (isDamaged) {
 			g.drawImage(damagedPlayer, this.getX() - Camera.x, this.getY() - Camera.y, null);
 			if (hasGun) {
@@ -93,7 +106,7 @@ public class Player extends Entity {
 	
 
 	
-	public void reciveDamage(int damage) {
+	public void receiveDamage(int damage) {
 		life -= damage;
 	}
 
@@ -124,7 +137,7 @@ public class Player extends Entity {
 			y += speed;
 		}
 
-		if (rigth && World.isFree((int) (x + speed), this.getY())) {
+		if (right && World.isFree((int) (x + speed), this.getY())) {
 			moved = true;
 			dir = rightDir;
 			x += speed;
@@ -137,8 +150,10 @@ public class Player extends Entity {
 		if (moved) {
 
 			walkCounter++;
-			if (walkCounter == (int) walkCounterLimit / 2) {
-				Sound.playerWalk.play();
+			if (walkCounter == walkCounterLimit / 2) {
+				if (Sound.playerWalk != null) {
+					Sound.playerWalk.play();
+				}
 			}
 			if (walkCounter == walkCounterLimit) {
 				walkCounter = 0;
@@ -171,8 +186,8 @@ public class Player extends Entity {
 			if (hasGun && ammo > 0) {
 				ammo--;
 
-				int dx = 0;
-				int px = 0;
+				int dx;
+				int px;
 				int py = 6;
 
 				if (dir == rightDir) {
@@ -186,13 +201,15 @@ public class Player extends Entity {
 				Bullet bullet = new Bullet(this.getX() + px, this.getY() + py, 3, 3, null, dx, 0);
 
 				Game.bullets.add(bullet);
-				Sound.playerShoot.play();
+				if (Sound.playerShoot != null) {
+					Sound.playerShoot.play();
+				}
 
 			}
 		}
 	}
 
-	private void checkColisionLifeWithAmmunition() {
+	private void checkCollisionLifeWithAmmunition() {
 		for (int i = 0; i < Game.ammunition.size(); i++) {
 			Ammunition currentAmmo = Game.ammunition.get(i);
 
@@ -202,7 +219,9 @@ public class Player extends Entity {
 				/*
 				 * if(ammo > Ammunition.maxAmmunition) { ammo = Ammunition.maxAmmunition; }
 				 */
-				Sound.gunLoad.play();
+				if (Sound.gunLoad != null) {
+					Sound.gunLoad.play();
+				}
 
 				Game.ammunition.remove(currentAmmo);
 				Game.entities.remove(currentAmmo);
@@ -211,7 +230,7 @@ public class Player extends Entity {
 		}
 	}
 
-	private void checkColisionWithLifePack() {
+	private void checkCollisionWithLifePack() {
 		for (int i = 0; i < Game.lifepacks.size(); i++) {
 			Lifepack lifepack = Game.lifepacks.get(i);
 
@@ -222,7 +241,9 @@ public class Player extends Entity {
 					Game.player.life = Game.player.maxLife;
 				}
 
-				Sound.lifePackRecovered.play();
+				if (Sound.lifePackRecovered != null) {
+					Sound.lifePackRecovered.play();
+				}
 
 				Game.lifepacks.remove(lifepack);
 				Game.entities.remove(lifepack);
@@ -232,16 +253,18 @@ public class Player extends Entity {
 
 	}
 
-	private void checkColisionWithWeapon() {
+	private void checkCollisionWithWeapon() {
 		for (int i = 0; i < Game.weapons.size(); i++) {
-			Weapon waepon = Game.weapons.get(i);
+			Weapon weapon = Game.weapons.get(i);
 
-			if (Entity.isColliding(this, waepon)) {
+			if (Entity.isColliding(this, weapon)) {
 				hasGun = true;
-				Sound.weaponRecovered.play();
+				if (Sound.weaponRecovered != null) {
+					Sound.weaponRecovered.play();
+				}
 
-				Game.weapons.remove(waepon);
-				Game.entities.remove(waepon);
+				Game.weapons.remove(weapon);
+				Game.entities.remove(weapon);
 
 			}
 		}

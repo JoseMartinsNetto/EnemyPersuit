@@ -1,13 +1,12 @@
 package br.com.josedev.entities;
 
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
-
-import br.com.josedev.main.Debug;
 import br.com.josedev.main.Game;
 import br.com.josedev.main.Sound;
-import br.com.josedev.world.*;
+import br.com.josedev.world.Camera;
+import br.com.josedev.world.World;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Enemy extends Entity {
 	private final double speed = 1;
@@ -27,6 +26,7 @@ public class Enemy extends Entity {
 	public Enemy(int x, int y, int width, int height, BufferedImage sprite) {
 		super(x, y, width, height, sprite);
 		setAnimationSprites();
+		setMask(3,4, 10,13);
 	}
 
 	public void update() {
@@ -89,7 +89,7 @@ public class Enemy extends Entity {
 		boolean shouldMakeDamage = probabilityOfDamage < 10;
 
 		if (shouldMakeDamage) {
-			Game.player.reciveDamage(Game.rand.nextInt(5));
+			Game.player.receiveDamage(Game.rand.nextInt(5));
 			Game.player.isDamaged = true;
 
 			if (Sound.hurtEffect != null) {

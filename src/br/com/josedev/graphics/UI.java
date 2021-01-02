@@ -1,13 +1,10 @@
 package br.com.josedev.graphics;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-
 import br.com.josedev.main.Constants;
 import br.com.josedev.main.Game;
 import br.com.josedev.main.GameState;
+
+import java.awt.*;
 
 public class UI {
 	public void render(Graphics g, boolean shouldToggleEnemyCount) {

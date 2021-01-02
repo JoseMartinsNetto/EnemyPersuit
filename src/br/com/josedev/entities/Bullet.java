@@ -1,10 +1,10 @@
 package br.com.josedev.entities;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import br.com.josedev.main.Game;
 import br.com.josedev.world.Camera;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Bullet extends Entity {
 	private final int dx;

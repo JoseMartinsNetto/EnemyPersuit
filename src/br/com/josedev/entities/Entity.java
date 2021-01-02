@@ -1,10 +1,10 @@
 package br.com.josedev.entities;
 
-import java.awt.Graphics;
-import java.awt.Rectangle;
-import java.awt.image.BufferedImage;
 import br.com.josedev.main.Game;
 import br.com.josedev.world.Camera;
+
+import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Entity {
 
@@ -26,7 +26,7 @@ public class Entity {
 	public static BufferedImage WEAPON_DAMAGE_RIGHT = Game.spritesheet.getSprite(0, 32, TILE_SIZE, TILE_SIZE);
 	public static BufferedImage WEAPON_DAMAGE_LEFT = Game.spritesheet.getSprite(TILE_SIZE, 32, TILE_SIZE, TILE_SIZE);
 
-	private int maskx, masky, mwidth, mheight;
+	protected int maskx, masky, mwidth, mheight;
 
 	public Entity(int x, int y, int width, int height, BufferedImage sprite) {
 		this.x = x;
@@ -64,7 +64,7 @@ public class Entity {
 		return (int) this.y;
 	}
 
-	public int getWidht() {
+	public int getWidth() {
 		return this.width;
 	}
 

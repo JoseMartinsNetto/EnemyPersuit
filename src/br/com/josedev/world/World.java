@@ -1,11 +1,12 @@
 package br.com.josedev.world;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 import br.com.josedev.entities.*;
 import br.com.josedev.main.Game;
+
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class World {
 	public static Tile[] tiles;
@@ -77,13 +78,14 @@ public class World {
 		int y2 = ynext / TILE_SIZE;
 
 		int x3 = xnext / TILE_SIZE;
-		int y3 = (ynext + TILE_SIZE - 1) / TILE_SIZE;
+		int y3 = (ynext + TILE_SIZE -1) / TILE_SIZE;
 
 		int x4 = (xnext + TILE_SIZE - 1) / TILE_SIZE;
 		int y4 = (ynext + TILE_SIZE - 1) / TILE_SIZE;
 
 		return !((tiles[x1 + (y1 * World.WIDTH)] instanceof WallTile)
-				|| (tiles[x2 + (y2 * World.WIDTH)] instanceof WallTile) || (tiles[x3 + (y3 * World.WIDTH)] instanceof WallTile)
+				|| (tiles[x2 + (y2 * World.WIDTH)] instanceof WallTile)
+				|| (tiles[x3 + (y3 * World.WIDTH)] instanceof WallTile)
 				|| (tiles[x4 + (y4 * World.WIDTH)] instanceof WallTile));
 	}
 
