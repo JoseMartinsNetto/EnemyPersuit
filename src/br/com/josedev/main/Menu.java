@@ -34,7 +34,7 @@ public class Menu {
 		if (enter) {
 			enter = false;
 			if (options[currentOption].equals(options[0])) {
-				Game.gameState = GameState.Normal;
+				Game.setPlayingState();
 				pause = false;
 
 				if (Sound.musicBackground != null) {

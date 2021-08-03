@@ -5,9 +5,7 @@ public class Debug {
     System.out.println(arg);
   }
 
-  public static void log(int arg) {
-    System.out.println(arg);
-  }
+  public static void log(int arg) { System.out.println(arg); }
 
   public static void log(char arg) {
     System.out.println(arg);

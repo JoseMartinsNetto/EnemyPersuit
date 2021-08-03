@@ -99,6 +99,7 @@ public class Enemy extends Entity {
 	}
 
 	private void pursuitPlayer() {
+
 		int probabilityOfPursuit = Game.rand.nextInt(100);
 		boolean shouldPursuit = probabilityOfPursuit < 50;
 

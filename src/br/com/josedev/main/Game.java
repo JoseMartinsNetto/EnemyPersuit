@@ -23,7 +23,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public static final int SCALE = 4;
 	
 	public static String curLevelName;
-	public static GameState gameState = GameState.Loading;
 	
 	public static List<Entity> entities;
 	public static List<Enemy> enemies;
@@ -40,6 +39,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public Menu menu;
 	public UI ui;
 
+	private static GameState gameState = GameState.Loading;
 	private static final long serialVersionUID = 1L;
 	private static double waitTime = 0;
 	private static final double waitTimeLimit = 300.0;
@@ -53,6 +53,18 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	
 	private Thread thread;
 	private final BufferedImage image;
+
+	public static GameState getState() { return gameState; }
+
+	public static void setStateForPlayerLife(double life) {
+		if (life <= 0 ) {
+			gameState = GameState.GameOver;
+		}
+	}
+
+	public static void setPlayingState() {
+		gameState = GameState.Normal;
+	}
 
 	public Game() {
 		rand = new Random();
@@ -117,6 +129,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	}
 
 	public void update() {
+
 		if (gameState == GameState.Normal) {
 			restartGame = false;
 
@@ -258,29 +271,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
-			player.right = true;
-
-		} else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
-			player.left = true;
-		}
-
-		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
-			player.up = true;
-			if (gameState == GameState.Menu) {
-				menu.up = true;
-			}
-
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
-			player.down = true;
-			if (gameState == GameState.Menu) {
-				menu.down = true;
-			}
-		}
-
-		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			player.isShooting = true;
-		}
+		Input.setPressed(e.getKeyCode());
 
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
 			restartGame = true;
@@ -304,20 +295,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT || e.getKeyCode() == KeyEvent.VK_D) {
-			player.right = false;
-
-		} else if (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_A) {
-			player.left = false;
-		}
-
-		if (e.getKeyCode() == KeyEvent.VK_UP || e.getKeyCode() == KeyEvent.VK_W) {
-			player.up = false;
-
-		} else if (e.getKeyCode() == KeyEvent.VK_DOWN || e.getKeyCode() == KeyEvent.VK_S) {
-			player.down = false;
-		}
-
+		Input.setReleased(e.getKeyCode());
 	}
 
 	@Override

@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class UI {
 	public void render(Graphics g, boolean shouldToggleEnemyCount) {
-		if (Game.gameState == GameState.Normal) {
+		if (Game.getState() == GameState.Normal) {
 			renderLife(g);
 			renderEnemyCount(g, shouldToggleEnemyCount);
 			renderAmmo(g);

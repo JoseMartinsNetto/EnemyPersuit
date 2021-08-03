@@ -1,20 +1,18 @@
 package br.com.josedev.entities;
 
-import br.com.josedev.main.Game;
-import br.com.josedev.main.GameState;
-import br.com.josedev.main.Sound;
-import br.com.josedev.world.Camera;
-import br.com.josedev.world.World;
+import br.com.josedev.main.*;
+import br.com.josedev.world.*;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
-	public boolean up = false, down = false, left = false, right = false;
 	public boolean isDamaged = false;
-	public boolean isShooting = false;
-	
-	public double speed = 0.8;
+	private boolean isShooting = false;
+
+	public double speed;
+	private final double normalSpeed = 0.8;
+	private final double runningSpeed = 1.2;
 	
 	public int rightDir = 0, leftDir = 1;
 	public int dir = rightDir;
@@ -59,26 +57,15 @@ public class Player extends Entity {
 	public void update() {
 		animateMove();
 		animateDamage();
-		
 		shootingCheck();
-		
 		checkCollisionWithLifePack();
 		checkCollisionLifeWithAmmunition();
 		checkCollisionWithWeapon();
-
-		if (life <= 0) {
-			life = 0;
-			Game.gameState = GameState.GameOver;
-		}
-
+		Game.setStateForPlayerLife(life);
 		updateCamera();
-
 	}
 	
 	public void render(Graphics g) {
-
-		g.setColor(Color.blue);
-		g.fillRect(this.getX() + maskx  - Camera.x, this.getY() + masky - Camera.y, mwidth, mheight);
 
 		if (isDamaged) {
 			g.drawImage(damagedPlayer, this.getX() - Camera.x, this.getY() - Camera.y, null);
@@ -104,8 +91,6 @@ public class Player extends Entity {
 		}
 	}
 	
-
-	
 	public void receiveDamage(int damage) {
 		life -= damage;
 	}
@@ -129,19 +114,26 @@ public class Player extends Entity {
 	
 	private void animateMove() {
 		moved = false;
-		if (up && World.isFree(this.getX(), (int) (y - speed))) {
+
+		if (Input.Shift()) {
+			speed = runningSpeed;
+		} else {
+			speed = normalSpeed;
+		}
+
+		if (Input.Up() && World.isFree(this.getX(), (int) (y - normalSpeed))) {
 			moved = true;
 			y -= speed;
-		} else if (down && World.isFree(this.getX(), (int) (y + speed))) {
+		} else if (Input.Down() && World.isFree(this.getX(), (int) (y + speed))) {
 			moved = true;
 			y += speed;
 		}
 
-		if (right && World.isFree((int) (x + speed), this.getY())) {
+		if (Input.Right() && World.isFree((int) (x + speed), this.getY())) {
 			moved = true;
 			dir = rightDir;
 			x += speed;
-		} else if (left && World.isFree((int) (x - speed), this.getY())) {
+		} else if (Input.Left() && World.isFree((int) (x - speed), this.getY())) {
 			moved = true;
 			dir = leftDir;
 			x -= speed;
@@ -181,6 +173,7 @@ public class Player extends Entity {
 	}
 	
 	private void shootingCheck() {
+
 		if (isShooting) {
 			isShooting = false;
 			if (hasGun && ammo > 0) {
@@ -206,6 +199,10 @@ public class Player extends Entity {
 				}
 
 			}
+		}
+
+		if (Input.Space()) {
+			isShooting = true;
 		}
 	}
 
