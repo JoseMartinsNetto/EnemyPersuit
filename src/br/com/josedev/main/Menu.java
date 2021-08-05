@@ -15,7 +15,7 @@ public class Menu {
 	public boolean up, down, enter, pause;
 
 	public void update() {
-		if (up) {
+		if (Input.Up()) {
 			up = false;
 			currentOption--;
 			if (currentOption < 0) {
@@ -23,7 +23,7 @@ public class Menu {
 			}
 		}
 
-		if (down) {
+		if (Input.Down()) {
 			down = false;
 			currentOption++;
 			if (currentOption > maxOption) {
@@ -31,7 +31,7 @@ public class Menu {
 			}
 		}
 
-		if (enter) {
+		if (Input.Enter()) {
 			enter = false;
 			if (options[currentOption].equals(options[0])) {
 				Game.setPlayingState();

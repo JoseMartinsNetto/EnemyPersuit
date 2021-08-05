@@ -8,12 +8,12 @@ import java.awt.image.BufferedImage;
 
 public class Player extends Entity {
 	public boolean isDamaged = false;
-	private boolean isShooting = false;
+	public boolean isShooting = false;
 
 	public double speed;
 	private final double normalSpeed = 0.8;
 	private final double runningSpeed = 1.2;
-	
+
 	public int rightDir = 0, leftDir = 1;
 	public int dir = rightDir;
 	public int ammo = 0;
@@ -199,10 +199,6 @@ public class Player extends Entity {
 				}
 
 			}
-		}
-
-		if (Input.Space()) {
-			isShooting = true;
 		}
 	}
 

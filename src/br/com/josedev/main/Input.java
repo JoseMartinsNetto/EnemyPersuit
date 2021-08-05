@@ -14,6 +14,7 @@ public class Input {
     private static final int KeySDown = KeyEvent.VK_S;
 
     private static final int KeySpace = KeyEvent.VK_SPACE;
+    private static final int KeyEscape = KeyEvent.VK_ESCAPE;
     private static final int KeyEnter = KeyEvent.VK_ENTER;
     private static final int KeyShift = KeyEvent.VK_SHIFT;
 
@@ -23,6 +24,7 @@ public class Input {
             right = false,
             space = false,
             enter = false,
+            escape = false,
             shift = false;
 
     public static void setPressed(int keyCode) {
@@ -54,6 +56,10 @@ public class Input {
         if (keyCode == KeySpace) {
             space = true;
         }
+
+        if (keyCode == KeyEscape) {
+            escape = true;
+        }
     }
     public static void setReleased(int keyCode) {
 
@@ -84,6 +90,10 @@ public class Input {
         if (keyCode == KeySpace) {
             space = false;
         }
+
+        if (keyCode == KeyEscape) {
+            escape = false;
+        }
     }
 
     public static boolean Right() {
@@ -110,8 +120,11 @@ public class Input {
         return enter;
     }
 
+    public static  boolean Escape() {
+        return escape;
+    }
+
     public static boolean Shift() {
         return shift;
     }
-
 }

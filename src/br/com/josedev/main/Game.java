@@ -273,7 +273,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	public void keyPressed(KeyEvent e) {
 		Input.setPressed(e.getKeyCode());
 
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+		if (Input.Enter()) {
 			restartGame = true;
 
 			if (gameState == GameState.Menu) {
@@ -281,7 +281,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 			}
 		}
 
-		if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+		if (Input.Escape()) {
 			if (gameState == GameState.Normal) {
 				gameState = GameState.Menu;
 				menu.pause = true;
@@ -289,6 +289,10 @@ public class Game extends Canvas implements Runnable, KeyListener {
 					Sound.musicBackground.pause();
 				}
 			}
+		}
+
+		if (Input.Space()) {
+			player.isShooting = true;
 		}
 
 	}
@@ -299,8 +303,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
 	}
 
 	@Override
-	public void keyTyped(KeyEvent e) {
-
-	}
+	public void keyTyped(KeyEvent e) { }
 
 }
